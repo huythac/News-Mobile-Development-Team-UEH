@@ -43,13 +43,18 @@ public class UserDAO {
     public User login(String usernameOrEmail, String password) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery(
-                "SELECT id, username, email, password, full_name, role FROM users WHERE (username=? OR email=?) AND password=?",
+                "SELECT id, username, email, full_name, role FROM users WHERE (username=? OR email=?) AND password=?",
                 new String[]{usernameOrEmail, usernameOrEmail, password}
         );
 
         if (c.moveToFirst()) {
-            User u = new User(c.getInt(0), c.getString(1), c.getString(2),
-                    c.getString(3), c.getString(4), c.getString(5));
+            User u = new User(
+                    c.getInt(0),    // id
+                    c.getString(1), // username
+                    c.getString(2), // email
+                    c.getString(3), // full_name
+                    c.getString(4)  // role
+            );
             c.close();
             db.close();
             return u;
@@ -59,15 +64,31 @@ public class UserDAO {
         return null;
     }
 
+
     // get by id
     public User getById(int id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT id, username, email, password, full_name, role FROM users WHERE id=?", new String[]{String.valueOf(id)});
+        Cursor c = db.rawQuery(
+                "SELECT id, username, email, full_name, role FROM users WHERE id=?",
+                new String[]{String.valueOf(id)}
+        );
+
         if (c.moveToFirst()) {
-            User u = new User(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getString(4), c.getString(5));
-            c.close(); db.close(); return u;
+            User u = new User(
+                    c.getInt(0),    // id
+                    c.getString(1), // username
+                    c.getString(2), // email
+                    c.getString(3), // full_name
+                    c.getString(4)  // role
+            );
+            c.close();
+            db.close();
+            return u;
         }
-        c.close(); db.close(); return null;
+        c.close();
+        db.close();
+        return null;
     }
+
 }
 
