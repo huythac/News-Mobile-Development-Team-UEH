@@ -64,11 +64,14 @@ public class MainActivity extends AppCompatActivity {
                     // Đang ở Home rồi thì không làm gì hoặc reload
                     return true;
                 }
+                // Trong MainActivity.java -> onNavigationItemSelected
+
                 else if (id == R.id.nav_account) {
                     // CHUYỂN SANG MÀN HÌNH TÀI KHOẢN
-                    // Intent intent = new Intent(MainActivity.this, AccountActivity.class);
-                    // startActivity(intent);
-                    Toast.makeText(MainActivity.this, "Chuyển sang trang Tài khoản", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this, AccountActivity.class);
+                    startActivity(intent);
+                    // Không finish() MainActivity để người dùng có thể back lại nếu muốn,
+                    // hoặc finish() nếu muốn cơ chế giống Facebook.
                     return true;
                 }
                 else if (id == R.id.nav_search) {
