@@ -2,21 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_home"
-        android:icon="@drawable/ic_launcher_foreground"
+        android:icon="@drawable/newspaper"
         android:title="Tin tức" />
 
     <item
         android:id="@+id/nav_search"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/magnifying_glass"
         android:title="Tìm kiếm" />
 
     <item
         android:id="@+id/nav_saved"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/bookmarks"
         android:title="Đã lưu" />
 
     <item
         android:id="@+id/nav_account"
-        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:icon="@drawable/user_circle"
         android:title="Tài khoản" />
 </menu>
