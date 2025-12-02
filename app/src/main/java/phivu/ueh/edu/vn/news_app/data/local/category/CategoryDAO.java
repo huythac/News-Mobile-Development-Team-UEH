@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.category;
+package phivu.ueh.edu.vn.news_app.data.local.category;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -8,7 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-import phivu.ueh.edu.vn.news_app.data.Database;
+import phivu.ueh.edu.vn.news_app.data.local.Database;
+import phivu.ueh.edu.vn.news_app.model.Category;
 
 public class CategoryDAO {
     private Database dbHelper;

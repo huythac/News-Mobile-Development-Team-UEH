@@ -1,6 +1,8 @@
-package phivu.ueh.edu.vn.news_app.user;
+package phivu.ueh.edu.vn.news_app.data.local.user;
 
 import android.content.Context;
+
+import phivu.ueh.edu.vn.news_app.model.User;
 
 public class UserRepository {
     private UserDAO dao;

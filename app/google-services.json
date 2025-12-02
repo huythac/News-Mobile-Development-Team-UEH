@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "803374431448",
+    "project_id": "news-app-d7d9d",
+    "storage_bucket": "news-app-d7d9d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803374431448:android:6894521264e2f58896ebad",
+        "android_client_info": {
+          "package_name": "phivu.ueh.edu.vn.news_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcHEKWvHPvJ87RcNTOpdEmw7gGfQ_MylE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

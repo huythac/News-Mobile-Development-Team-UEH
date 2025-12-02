@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.user;
+package phivu.ueh.edu.vn.news_app.model;
 
 public class User {
     private int id;

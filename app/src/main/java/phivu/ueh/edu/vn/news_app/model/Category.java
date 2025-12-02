@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.category;
+package phivu.ueh.edu.vn.news_app.model;
 
 public class Category {
     private int id;

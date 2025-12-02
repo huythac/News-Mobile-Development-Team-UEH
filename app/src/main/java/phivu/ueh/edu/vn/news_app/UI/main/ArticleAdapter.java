@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app;
+package phivu.ueh.edu.vn.news_app.UI.main;
 
 
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+
+import phivu.ueh.edu.vn.news_app.R;
+import phivu.ueh.edu.vn.news_app.model.Article;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 

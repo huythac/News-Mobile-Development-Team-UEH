@@ -1,7 +1,10 @@
-package phivu.ueh.edu.vn.news_app.category;
+package phivu.ueh.edu.vn.news_app.data.local.category;
 
 import android.content.Context;
+
 import java.util.List;
+
+import phivu.ueh.edu.vn.news_app.model.Category;
 
 public class CategoryRepository {
     private CategoryDAO dao;

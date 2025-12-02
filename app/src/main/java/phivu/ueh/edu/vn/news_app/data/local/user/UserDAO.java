@@ -1,11 +1,12 @@
-package phivu.ueh.edu.vn.news_app.user;
+package phivu.ueh.edu.vn.news_app.data.local.user;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import phivu.ueh.edu.vn.news_app.data.Database;
+import phivu.ueh.edu.vn.news_app.data.local.Database;
+import phivu.ueh.edu.vn.news_app.model.User;
 
 public class UserDAO {
     private Database dbHelper;
