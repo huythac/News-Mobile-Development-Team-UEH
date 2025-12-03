@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.data.repo;
+package phivu.ueh.edu.vn.news_app.data.local.article;
 
 import android.content.Context;
 
@@ -30,7 +30,7 @@ public class ArticleRepository {
 
     // get list with fallback
     public void getList(final ListCallback cb) {
-        remote.fetchAll(new ArticleFirebaseDAO.Listener() {
+        remote.fetchAll(new ArticleFirebaseDAO.ListListener() {
             @Override
             public void onLoaded(List<Article> list) {
                 // update local cache with lastSynced = now
@@ -77,7 +77,7 @@ public class ArticleRepository {
 
     // Forcing a full sync from remote -> local
     public void forceSyncFromRemote() {
-        remote.fetchAll(new ArticleFirebaseDAO.Listener() {
+        remote.fetchAll(new ArticleFirebaseDAO.ListListener() {
             @Override public void onLoaded(List<Article> list) {
                 long now = System.currentTimeMillis();
                 for (Article a : list) local.upsert(a, now);

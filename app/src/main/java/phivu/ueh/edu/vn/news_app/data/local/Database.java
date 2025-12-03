@@ -8,7 +8,19 @@ public class Database extends SQLiteOpenHelper {
     private static final String DB_NAME = "news.db";
     private static final int DB_VERSION = 2; // tăng khi thay đổi schema
 
-    public Database(Context context) {
+    // ⭐ Singleton Instance
+    private static Database instance;
+
+    // ⭐ Hàm lấy instance dùng chung toàn app
+    public static synchronized Database getInstance(Context context) {
+        if (instance == null) {
+            instance = new Database(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    // ⭐ Để constructor private ngăn tạo sai cách
+    private Database(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
@@ -22,9 +34,11 @@ public class Database extends SQLiteOpenHelper {
                 "description TEXT, " +
                 "viewed INTEGER DEFAULT 0, " +      // 0 = chưa xem, 1 = đã xem
                 "lastSynced INTEGER DEFAULT 0)");   // epoch millis
+
         db.execSQL("CREATE TABLE Category (" +
                 "id TEXT PRIMARY KEY, " +
                 "name TEXT)");
+
         db.execSQL("CREATE TABLE User (" +
                 "id TEXT PRIMARY KEY, " +
                 "username TEXT," +
@@ -34,7 +48,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-        // simple upgrade strategy: drop & re-create (bạn có thể viết migration nếu cần giữ dữ liệu)
+        // simple upgrade strategy: drop & recreate
         db.execSQL("DROP TABLE IF EXISTS Article");
         db.execSQL("DROP TABLE IF EXISTS Category");
         db.execSQL("DROP TABLE IF EXISTS User");

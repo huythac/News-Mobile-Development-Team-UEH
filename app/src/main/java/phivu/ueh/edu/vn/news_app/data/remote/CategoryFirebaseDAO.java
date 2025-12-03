@@ -3,23 +3,22 @@ package phivu.ueh.edu.vn.news_app.data.remote;
 import com.google.firebase.database.*;
 import java.util.*;
 import phivu.ueh.edu.vn.news_app.model.Category;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.DatabaseReference;
-
 
 public class CategoryFirebaseDAO {
 
-    private DatabaseReference ref;
+    private final DatabaseReference ref;
 
     public CategoryFirebaseDAO() {
         ref = FirebaseDatabase.getInstance().getReference("categories");
     }
 
+    // Callback list
     public interface ListListener {
         void onLoaded(List<Category> list);
         void onError(String err);
     }
 
+    // Callback single
     public interface SingleListener {
         void onLoaded(Category category);
         void onError(String err);
@@ -40,12 +39,16 @@ public class CategoryFirebaseDAO {
                 List<Category> out = new ArrayList<>();
                 for (DataSnapshot s : snapshot.getChildren()) {
                     Category c = s.getValue(Category.class);
-                    out.add(c);
+                    if (c != null) {
+                        c.setId(s.getKey()); // gán id từ Firebase
+                        out.add(c);
+                    }
                 }
                 listener.onLoaded(out);
             }
 
-            @Override public void onCancelled(DatabaseError error) {
+            @Override
+            public void onCancelled(DatabaseError error) {
                 listener.onError(error.getMessage());
             }
         });
@@ -54,13 +57,19 @@ public class CategoryFirebaseDAO {
     // READ ONE
     public void fetchById(String id, SingleListener listener) {
         ref.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override public void onDataChange(DataSnapshot snapshot) {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
                 Category c = snapshot.getValue(Category.class);
-                if (c != null) listener.onLoaded(c);
-                else listener.onError("Not found");
+                if (c != null) {
+                    c.setId(snapshot.getKey());
+                    listener.onLoaded(c);
+                } else {
+                    listener.onError("Not found");
+                }
             }
 
-            @Override public void onCancelled(DatabaseError error) {
+            @Override
+            public void onCancelled(DatabaseError error) {
                 listener.onError(error.getMessage());
             }
         });

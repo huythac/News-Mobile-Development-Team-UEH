@@ -16,7 +16,7 @@ public class ArticleDAO {
     private Database dbHelper;
 
     public ArticleDAO(Context ctx) {
-        dbHelper = new Database(ctx);
+        dbHelper = Database.getInstance(ctx);
     }
 
     public void clear() {

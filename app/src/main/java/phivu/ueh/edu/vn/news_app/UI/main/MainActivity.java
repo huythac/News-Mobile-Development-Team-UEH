@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         // KẾT NỐI DATABASE
-        Database db = new Database(this);
+        Database db = Database.getInstance(this);
 
         // LẤY DỮ LIỆU THẬT TRONG SQLITE
 

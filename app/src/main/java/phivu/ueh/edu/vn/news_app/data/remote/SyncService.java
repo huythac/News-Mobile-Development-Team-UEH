@@ -32,7 +32,7 @@ public class SyncService {
     // sync nếu online
     public void syncIfOnline() {
         if (!isOnline()) return;
-        fbArticle.fetchAll(new ArticleFirebaseDAO.Listener() {
+        fbArticle.fetchAll(new ArticleFirebaseDAO.ListListener() {
             @Override
             public void onLoaded(java.util.List<phivu.ueh.edu.vn.news_app.model.Article> list) {
                 long now = System.currentTimeMillis();

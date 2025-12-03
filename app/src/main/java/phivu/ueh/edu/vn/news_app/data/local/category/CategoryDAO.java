@@ -39,12 +39,20 @@ public class CategoryDAO {
         List<Category> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT id, name, description FROM categories", null);
+
         if (c.moveToFirst()) {
             do {
-                list.add(new Category(c.getInt(0), c.getString(1), c.getString(2)));
+                list.add(new Category(
+                        c.getString(0),   // ✔ id là String
+                        c.getString(1),   // name
+                        c.getString(2)    // description
+                ));
             } while (c.moveToNext());
         }
-        c.close(); db.close();
+
+        c.close();
+        db.close();
         return list;
     }
+
 }
