@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">News_app</string>
+    <string name="login_prompt">Bạn đã có tài khoản? <font color="#84CC16"><b>Đăng nhập</b></font></string>
 </resources>
