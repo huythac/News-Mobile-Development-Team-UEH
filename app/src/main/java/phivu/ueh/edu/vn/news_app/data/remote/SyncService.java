@@ -1,46 +1,54 @@
 package phivu.ueh.edu.vn.news_app.data.remote;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.util.Log;
 
+import java.util.List;
+
+import phivu.ueh.edu.vn.news_app.data.local.category.CategoryDAO;
 import phivu.ueh.edu.vn.news_app.data.local.article.ArticleDAO;
+import phivu.ueh.edu.vn.news_app.model.Category;
+import phivu.ueh.edu.vn.news_app.model.Article;
 
 /**
- * SyncService: gọi từ Application hoặc từ BroadcastReceiver khi có CONNECTIVITY_CHANGE
- * Mục tiêu: khi có kết nối, đồng bộ từ Firebase -> SQLite
+ * Lightweight sync helper.
+ * - By default we sync categories to local (so filtering works offline)
+ * - Articles are viewer-based cached; force sync all articles is provided for admin use
  */
 public class SyncService {
-    private Context ctx;
-    private ArticleDAO articleDAO;
-    private ArticleFirebaseDAO fbArticle;
+    private static final String TAG = "SyncService";
+
+    private final CategoryFirebaseDAO categoryRemote;
+    private final ArticleFirebaseDAO articleRemote;
+    private final CategoryDAO categoryLocal;
+    private final ArticleDAO articleLocal;
 
     public SyncService(Context ctx) {
-        this.ctx = ctx.getApplicationContext();
-        this.articleDAO = new ArticleDAO(ctx);
-        this.fbArticle = new ArticleFirebaseDAO();
+        categoryRemote = new CategoryFirebaseDAO();
+        articleRemote = new ArticleFirebaseDAO();
+        categoryLocal = new CategoryDAO(ctx);
+        articleLocal = new ArticleDAO(ctx);
     }
 
-    // kiểm tra mạng
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (cm == null) return false;
-        NetworkInfo ni = cm.getActiveNetworkInfo();
-        return ni != null && ni.isConnected();
-    }
-
-    // sync nếu online
-    public void syncIfOnline() {
-        if (!isOnline()) return;
-        fbArticle.fetchAll(new ArticleFirebaseDAO.ListListener() {
-            @Override
-            public void onLoaded(java.util.List<phivu.ueh.edu.vn.news_app.model.Article> list) {
-                long now = System.currentTimeMillis();
-                for (phivu.ueh.edu.vn.news_app.model.Article a : list) {
-                    articleDAO.upsert(a, now);
-                }
+    public void syncCategories() {
+        categoryRemote.fetchAll(new CategoryFirebaseDAO.ListListener() {
+            @Override public void onLoaded(List<Category> list) {
+                for (Category c : list) categoryLocal.upsert(c);
+                Log.d(TAG, "Categories synced: " + list.size());
             }
-            @Override public void onError(String err) { /* log */ }
+            @Override public void onError(String err) { Log.w(TAG, "Category sync failed: " + err); }
+        });
+    }
+
+    // admin-only: force copy all articles to local
+    public void syncAllArticlesToLocal() {
+        articleRemote.fetchAll(new ArticleFirebaseDAO.ListListener() {
+            @Override public void onLoaded(List<Article> list) {
+                long now = System.currentTimeMillis();
+                for (Article a : list) articleLocal.upsert(a, now);
+                Log.d(TAG, "Articles force-synced: " + list.size());
+            }
+            @Override public void onError(String err) { Log.w(TAG, "Article force sync failed: " + err); }
         });
     }
 }

@@ -12,47 +12,43 @@ import phivu.ueh.edu.vn.news_app.data.local.Database;
 import phivu.ueh.edu.vn.news_app.model.Category;
 
 public class CategoryDAO {
-    private Database dbHelper;
+    private final Database dbHelper;
 
     public CategoryDAO(Context ctx) {
         dbHelper = Database.getInstance(ctx);
     }
 
-    public boolean addCategory(String name, String description) {
+    public void upsert(Category c) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("name", name);
-        cv.put("description", description);
-        long id = db.insert("categories", null, cv);
+        cv.put("id", c.getId());
+        cv.put("name", c.getName());
+        cv.put("description", c.getDescription());
+        db.insertWithOnConflict("Category", null, cv, SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
-        return id != -1;
-    }
-
-    public boolean deleteCategory(int id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        int rows = db.delete("categories", "id=?", new String[]{String.valueOf(id)});
-        db.close();
-        return rows > 0;
     }
 
     public List<Category> getAll() {
         List<Category> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT id, name, description FROM categories", null);
-
+        Cursor c = db.rawQuery("SELECT id, name, description FROM Category", null);
         if (c.moveToFirst()) {
             do {
-                list.add(new Category(
-                        c.getString(0),   // ✔ id là String
-                        c.getString(1),   // name
-                        c.getString(2)    // description
-                ));
+                list.add(new Category(c.getString(0), c.getString(1), c.getString(2)));
             } while (c.moveToNext());
         }
-
-        c.close();
-        db.close();
+        c.close(); db.close();
         return list;
     }
 
+    public Category getById(String id) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT id, name, description FROM Category WHERE id=?", new String[]{id});
+        if (c.moveToFirst()) {
+            Category cat = new Category(c.getString(0), c.getString(1), c.getString(2));
+            c.close(); db.close(); return cat;
+        }
+        c.close(); db.close();
+        return null;
+    }
 }
