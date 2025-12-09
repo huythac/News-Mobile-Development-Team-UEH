@@ -1,24 +1,33 @@
 package phivu.ueh.edu.vn.news_app.model;
 
 public class User {
-    private int id;
-    private String username;
-    private String email;
-    private String password;
+
+    private String id;
     private String fullName;
+    private String email;
     private String role;
 
-    public User(int id, String username, String email, String fullName, String role) {
+    // 🔥 BẮT BUỘC phải có constructor rỗng cho Firebase
+    public User() {}
+
+    // 🔥 Constructor đầy đủ dùng khi tạo user mới
+    public User(String id, String fullName, String email, String role) {
         this.id = id;
-        this.username = username;
-        this.email = email;
         this.fullName = fullName;
+        this.email = email;
         this.role = role;
     }
 
-    public int getId() { return id; }
-    public String getUsername() { return username; }
-    public String getEmail() { return email; }
+    // Getter + Setter
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
+
     public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
     public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

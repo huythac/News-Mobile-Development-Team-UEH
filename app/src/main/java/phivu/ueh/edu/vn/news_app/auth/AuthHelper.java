@@ -1,46 +1,46 @@
 package phivu.ueh.edu.vn.news_app.auth;
 
-import android.app.Activity;
-import android.content.Intent;
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class AuthHelper {
-
-    private FirebaseAuth auth;
+    private final FirebaseAuth auth;
 
     public AuthHelper() {
         auth = FirebaseAuth.getInstance();
     }
 
-    // sign in with Google idToken obtained from GoogleSignInClient (UI)
-    public void signInWithGoogleIdToken(String idToken, final AuthCallback cb) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = auth.getCurrentUser();
-                        cb.onSuccess(user);
-                    } else {
-                        cb.onError(task.getException() != null ? task.getException().getMessage() : "Auth failed");
-                    }
-                });
-    }
-
-    public interface AuthCallback {
+    public interface RegisterCallback {
         void onSuccess(FirebaseUser user);
         void onError(String err);
     }
 
-    // sign out
-    public void signOut() {
-        auth.signOut();
+    public interface LoginCallback {
+        void onSuccess(FirebaseUser user);
+        void onError(String err);
+    }
+
+    public void register(String email, String password, RegisterCallback cb) {
+        auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) cb.onSuccess(auth.getCurrentUser());
+                    else cb.onError(task.getException() == null ? "Unknown error" : task.getException().getMessage());
+                });
+    }
+
+    public void login(String email, String password, LoginCallback cb) {
+        auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) cb.onSuccess(auth.getCurrentUser());
+                    else cb.onError(task.getException() == null ? "Unknown error" : task.getException().getMessage());
+                });
     }
 
     public FirebaseUser getCurrentUser() {
         return auth.getCurrentUser();
+    }
+
+    public void logout() {
+        auth.signOut();
     }
 }
