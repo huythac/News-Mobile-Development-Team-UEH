@@ -10,6 +10,8 @@ public class Article implements Serializable {
     private String content;      // nội dung dài của bài báo
     private String description;  // mô tả tóm tắt bài báo
 
+    private String categoryId;
+
     public Article() { }
 
     public Article(String id, String title, String image, String content, String description) {
@@ -60,4 +62,13 @@ public class Article implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(String categoryId) {
+        this.categoryId = categoryId;
+    }
+
 }

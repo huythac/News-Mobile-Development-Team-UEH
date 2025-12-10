@@ -1,12 +1,18 @@
 package phivu.ueh.edu.vn.news_app.UI.main;
 
-
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import phivu.ueh.edu.vn.news_app.R;
@@ -15,9 +21,16 @@ import phivu.ueh.edu.vn.news_app.model.Article;
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
     private List<Article> articleList;
+    private Context context;
 
-    public ArticleAdapter(List<Article> articleList) {
+    public ArticleAdapter(Context context, List<Article> articleList) {
+        this.context = context;
         this.articleList = articleList;
+    }
+
+    public void updateData(List<Article> newList) {
+        this.articleList = newList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -31,22 +44,42 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
         Article article = articleList.get(position);
+
         holder.tvTitle.setText(article.getTitle());
         holder.tvDescription.setText(article.getDescription());
+
+        // Load image (use Android system placeholder to avoid missing resource)
+        if (article.getImage() != null && !article.getImage().isEmpty()) {
+            Picasso.get()
+                    .load(article.getImage())
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .into(holder.imgThumb);
+        } else {
+            holder.imgThumb.setImageResource(android.R.drawable.ic_menu_report_image);
+        }
+
+        holder.itemView.setOnClickListener(v -> {
+            // Ensure target Activity exists in same package (see ArticleDetailActivity below)
+            Intent intent = new Intent(context, ArticleDetailActivity.class);
+            intent.putExtra("articleId", article.getId());
+            context.startActivity(intent);
+        });
     }
 
     @Override
     public int getItemCount() {
-        return articleList.size();
+        return articleList == null ? 0 : articleList.size();
     }
 
     public static class ArticleViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle, tvDescription;
+        ImageView imgThumb;
+
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDescription = itemView.findViewById(R.id.tvDescription);
+            imgThumb = itemView.findViewById(R.id.imgArticleThumb); // ensure id exists in item_article.xml
         }
     }
 }
-

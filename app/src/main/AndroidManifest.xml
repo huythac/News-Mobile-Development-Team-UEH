@@ -24,6 +24,13 @@
         <activity
             android:name=".UI.main.MainActivity"
             android:exported="false" />
+
+
+        <!-- Màn hình Home — hiển thị danh sách bài báo -->
+        <activity
+            android:name=".UI.main.HomeActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>
