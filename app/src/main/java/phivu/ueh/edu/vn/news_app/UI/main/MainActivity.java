@@ -1,33 +1,28 @@
 package phivu.ueh.edu.vn.news_app.UI.main;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import phivu.ueh.edu.vn.news_app.R;
-import phivu.ueh.edu.vn.news_app.data.local.Database;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private ArticleAdapter adapter;
+    private LinearLayout layoutButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerViewArticles);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        layoutButtons = findViewById(R.id.layoutButtons);
 
-        // KẾT NỐI DATABASE
-        Database db = Database.getInstance(this);
-
-        // LẤY DỮ LIỆU THẬT TRONG SQLITE
-
-        // HIỂN THỊ LÊN MÀN HÌNH
-        recyclerView.setAdapter(adapter);
+        // Khi nhấn nút Email → chuyển sang HomeActivity để test bài báo
+        findViewById(R.id.btnEmail).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+        });
     }
 }
