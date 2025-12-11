@@ -61,9 +61,11 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGoogle"
             style="@style/SocialButtonStyle"
             android:text="Đăng ký bằng Google"
             app:icon="@drawable/ic_google" />
+
         <com.google.android.material.button.MaterialButton
             style="@style/SocialButtonStyle"
             android:text="Đăng ký bằng Microsoft"

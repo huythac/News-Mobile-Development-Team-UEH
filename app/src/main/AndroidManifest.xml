@@ -31,6 +31,11 @@
             android:name=".UI.main.HomeActivity"
             android:exported="false" />
 
+        <!-- Login -->
+        <activity
+            android:name=".UI.login.LoginActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

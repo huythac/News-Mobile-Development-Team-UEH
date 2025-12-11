@@ -14,21 +14,6 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
 }
 
 dependencies {
@@ -38,19 +23,14 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
-    // Firebase Realtime Database
-    implementation("com.google.firebase:firebase-database:20.3.0")
-
-    // Firebase Auth (nếu bạn dùng login)
+    // Firebase
     implementation("com.google.firebase:firebase-auth:22.1.0")
-
-    // Firebase Analytics (khuyên dùng)
+    implementation("com.google.firebase:firebase-database:20.3.0")
     implementation("com.google.firebase:firebase-analytics:21.5.1")
 
-    // Google sign in (nếu cần)
-    implementation("com.google.android.gms:play-services-auth:20.5.0")
+    // Google Sign-In (mới nhất)
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
 
-    // Image loader
     implementation("com.squareup.picasso:picasso:2.8")
 
     testImplementation(libs.junit)

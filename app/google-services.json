@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "803374431448",
+    "firebase_url": "https://news-app-d7d9d-default-rtdb.firebaseio.com",
     "project_id": "news-app-d7d9d",
     "storage_bucket": "news-app-d7d9d.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "phivu.ueh.edu.vn.news_app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "803374431448-nvbsu9nd6o9sk4km7c05llqqpkmb5chc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "phivu.ueh.edu.vn.news_app",
+            "certificate_hash": "a96aef4b4e0387f7fdf29f925814cc0fd0b8aebb"
+          }
+        },
+        {
+          "client_id": "803374431448-ktha7a5mciqkdeij0ggllik83kblfcll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBcHEKWvHPvJ87RcNTOpdEmw7gGfQ_MylE"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803374431448-ktha7a5mciqkdeij0ggllik83kblfcll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
