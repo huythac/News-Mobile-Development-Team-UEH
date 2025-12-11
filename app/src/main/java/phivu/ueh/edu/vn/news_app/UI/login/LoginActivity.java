@@ -31,18 +31,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main); // layout login, KHÔNG phải layout main!
 
-        // CẤU HÌNH GOOGLE SIGN-IN
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))  // BẮT BUỘC
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
         googleClient = GoogleSignIn.getClient(this, gso);
 
-        Button btnGoogle = findViewById(R.id.btnGoogle);
-        btnGoogle.setOnClickListener(v -> {
+        findViewById(R.id.btnGoogle).setOnClickListener(v -> {
             Intent intent = googleClient.getSignInIntent();
             startActivityForResult(intent, RC_SIGN_IN);
         });
@@ -59,22 +57,21 @@ public class LoginActivity extends AppCompatActivity {
                 GoogleSignInAccount account = task.getResult(ApiException.class);
 
                 AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+
                 FirebaseAuth.getInstance().signInWithCredential(credential)
                         .addOnSuccessListener(authResult -> {
-                            FirebaseUser user = authResult.getUser();
-                            Toast.makeText(this, "Đăng nhập thành công: " + user.getEmail(), Toast.LENGTH_SHORT).show();
 
-                            // CHUYỂN SANG HOME
-                            startActivity(new Intent(this, HomeActivity.class));
-                            finish();
+                            // ĐĂNG NHẬP XONG → CHUYỂN SANG HOME
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            finish(); // Đóng LoginActivity để không quay lại được
+
                         })
-                        .addOnFailureListener(e ->
-                                Toast.makeText(this, "Firebase error: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                        );
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(this, "Lỗi Firebase: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        });
 
             } catch (ApiException e) {
-                Toast.makeText(this, "Google Sign-In failed: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
-                Log.e("GOOGLE_LOGIN", "Error: ", e);
+                Toast.makeText(this, "Google Sign-In thất bại: " + e.getStatusCode(), Toast.LENGTH_LONG).show();
             }
         }
     }
