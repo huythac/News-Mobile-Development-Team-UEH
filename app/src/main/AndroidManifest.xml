@@ -36,6 +36,13 @@
             android:name=".UI.login.LoginActivity"
             android:exported="false" />
 
+        <!-- ActicleDetail -->
+        <activity android:name=".UI.main.ArticleDetailActivity"
+            android:exported="false" />
+
+
+
+
     </application>
 
 </manifest>

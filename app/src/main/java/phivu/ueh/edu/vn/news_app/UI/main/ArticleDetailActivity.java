@@ -2,11 +2,13 @@ package phivu.ueh.edu.vn.news_app.UI.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.squareup.picasso.Picasso;
 
 import phivu.ueh.edu.vn.news_app.R;
@@ -22,31 +24,55 @@ public class ArticleDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article_detail); // ensure this layout exists
+        setContentView(R.layout.activity_article_detail);
 
-        //imgDetail = findViewById(R.id.imgDetail);
-        //tvDetailTitle = findViewById(R.id.tvDetailTitle);
-        //tvDetailContent = findViewById(R.id.tvDetailContent);
+        MaterialToolbar toolbar = findViewById(R.id.detailToolbar);
+        toolbar.setNavigationIcon(R.drawable.ic_menu_back);
+        toolbar.setNavigationOnClickListener(v -> finish());
+
+        imgDetail = findViewById(R.id.imgDetail);
+        tvDetailTitle = findViewById(R.id.tvDetailTitle);
+        tvDetailContent = findViewById(R.id.tvDetailContent);
 
         repo = new ArticleRepository(this);
 
         String id = getIntent().getStringExtra("articleId");
-        if (id == null) {
-            Toast.makeText(this, "Article ID missing", Toast.LENGTH_SHORT).show();
+
+        if (id == null || id.isEmpty()) {
+            Toast.makeText(this, "Thiếu ID bài báo", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         repo.getArticle(id, new ArticleRepository.SingleCallback() {
-            @Override public void onSuccess(Article a) {
+            @Override
+            public void onSuccess(Article a) {
                 tvDetailTitle.setText(a.getTitle());
                 tvDetailContent.setText(a.getContent());
-                Picasso.get().load(a.getImage()).placeholder(android.R.drawable.ic_menu_report_image).into(imgDetail);
+
+                if (a.getImage() != null && !a.getImage().isEmpty()) {
+                    Picasso.get().load(a.getImage())
+                            .placeholder(android.R.drawable.ic_menu_report_image)
+                            .into(imgDetail);
+                }
+
                 repo.markViewed(a);
             }
-            @Override public void onError(String err) {
-                Toast.makeText(ArticleDetailActivity.this, "Không tải được bài báo: " + err, Toast.LENGTH_SHORT).show();
+
+            @Override
+            public void onError(String err) {
+                Toast.makeText(ArticleDetailActivity.this,
+                        "Không tải được bài báo: " + err,
+                        Toast.LENGTH_SHORT).show();
             }
         });
+
+        toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(ArticleDetailActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            finish();
+        });
     }
+
 }
