@@ -51,7 +51,8 @@
         <!-- ActicleDetail -->
         <activity android:name=".UI.main.ArticleDetailActivity"
             android:exported="false" />
-
+        <activity android:name=".UI.profile.EditProfileActivity"
+            android:exported="false" />
         <activity android:name=".UI.main.CategoryDetailActivity"
             android:exported="false" />
 

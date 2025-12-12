@@ -6,7 +6,7 @@ public class User {
     private String fullName;
     private String email;
     private String role;
-
+    private String bio;
     // 🔥 BẮT BUỘC phải có constructor rỗng cho Firebase
     public User() {}
 
@@ -16,6 +16,7 @@ public class User {
         this.fullName = fullName;
         this.email = email;
         this.role = role;
+        this.bio = "";
     }
 
     // Getter + Setter
@@ -30,4 +31,6 @@ public class User {
 
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
 }
