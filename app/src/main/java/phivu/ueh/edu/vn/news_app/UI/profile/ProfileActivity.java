@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import phivu.ueh.edu.vn.news_app.R;
+import phivu.ueh.edu.vn.news_app.UI.main.HomeActivity;
 import phivu.ueh.edu.vn.news_app.UI.main.MainActivity;
 import phivu.ueh.edu.vn.news_app.UI.profile.SettingsActivity; // Import SettingsActivity
 
@@ -38,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
             else if (id == R.id.nav_home) {
                 // Quay về trang chủ
-                startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
                 overridePendingTransition(0, 0);
                 finish(); // Đóng Profile để không chồng stack
                 return true;
