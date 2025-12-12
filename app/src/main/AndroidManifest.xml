@@ -35,6 +35,18 @@
         <activity
             android:name=".UI.login.LoginActivity"
             android:exported="false" />
+        <activity
+            android:name=".UI.profile.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.saved.SavedActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.search.SearchActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UI.profile.SettingsActivity"
+            android:exported="false" />
 
     </application>
 

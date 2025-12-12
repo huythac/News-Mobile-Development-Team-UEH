@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "803374431448-0rm3fh46fdc104ifr7prm3i6ekepna30.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "phivu.ueh.edu.vn.news_app",
+            "certificate_hash": "56198fc58a0a90d0379f4d2894e0f01aec649e0c"
+          }
+        },
+        {
           "client_id": "803374431448-nvbsu9nd6o9sk4km7c05llqqpkmb5chc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
