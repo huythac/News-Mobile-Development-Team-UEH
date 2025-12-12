@@ -43,6 +43,22 @@ public class ArticleRepository {
         });
     }
 
+    public void getArticlesByCategory(String categoryId, ListCallback cb) {
+        remote.fetchByCategory(categoryId, new ArticleFirebaseDAO.ListListener() {
+            @Override
+            public void onLoaded(List<Article> list) {
+                cb.onSuccess(list);
+            }
+
+            @Override
+            public void onError(String err) {
+                cb.onError(err);
+            }
+        });
+    }
+
+
+
     public void markViewed(Article a) { local.markViewed(a); }
 
     public void forceSyncAllToLocalIfNeeded() {

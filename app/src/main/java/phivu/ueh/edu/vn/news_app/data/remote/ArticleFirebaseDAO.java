@@ -57,6 +57,31 @@ public class ArticleFirebaseDAO {
         });
     }
 
+    public void fetchByCategory(String categoryId, ListListener listener) {
+
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("articles");
+
+        ref.orderByChild("categoryId").equalTo(categoryId)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    List<Article> list = new ArrayList<>();
+
+                    for (DataSnapshot ds : snapshot.getChildren()) {
+                        Article a = ds.getValue(Article.class);
+                        if (a != null) {
+                            a.setId(ds.getKey());
+                            list.add(a);
+                        }
+                    }
+
+                    listener.onLoaded(list);
+                })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
+
+
     public void update(Article article) {
         if (article.getId() == null) return;
         ref.child(article.getId()).setValue(article);
