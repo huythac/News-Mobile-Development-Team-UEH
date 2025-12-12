@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent; // 1. Import Intent
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -11,9 +12,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView; // 2. Import BottomNav
+
 import java.util.List;
 
 import phivu.ueh.edu.vn.news_app.R;
+import phivu.ueh.edu.vn.news_app.UI.profile.ProfileActivity; // 3. Import các Activity đích
+import phivu.ueh.edu.vn.news_app.UI.saved.SavedActivity;
+import phivu.ueh.edu.vn.news_app.UI.search.SearchActivity;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.CategoryRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
@@ -38,14 +44,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // ===== ÁNH XẠ TAB =====
+        // ===== 1. ÁNH XẠ TAB =====
         tvForYou = findViewById(R.id.tvForYou);
         tvTopic = findViewById(R.id.tvTopic);
 
         underlineForYou = findViewById(R.id.viewUnderlineForYou);
         underlineTopic = findViewById(R.id.viewUnderlineTopic);
 
-        // ===== ÁNH XẠ LIST =====
+        // ===== 2. ÁNH XẠ LIST =====
         rvArticles = findViewById(R.id.recyclerViewArticles);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
 
@@ -53,12 +59,15 @@ public class HomeActivity extends AppCompatActivity {
         rvTopics.setLayoutManager(new LinearLayoutManager(this));
         rvTopics.setVisibility(View.GONE);
 
+        // ===== 3. KHỞI TẠO REPO =====
         repo = new ArticleRepository(this);
         categoryRepo = new CategoryRepository(this);
 
-        // load bài báo mặc định
-        loadArticles();
+        // ===== 4. SETUP NAV & LOAD DATA =====
+        setupBottomNavigation();
+        loadArticles();          // Load bài báo mặc định
 
+        // ===== 5. XỬ LÝ SỰ KIỆN CLICK TAB =====
         tvForYou.setOnClickListener(v -> {
             setTabSelected(true);
             showArticles();
@@ -67,10 +76,40 @@ public class HomeActivity extends AppCompatActivity {
         tvTopic.setOnClickListener(v -> {
             setTabSelected(false);
             showTopics();
-            loadCategories(); // <<< QUAN TRỌNG NHẤT
+            loadCategories(); // Load category khi bấm tab
         });
 
         setTabSelected(true);
+    }
+
+    private void setupBottomNavigation() {
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
+
+        bottomNav.setSelectedItemId(R.id.nav_home);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == R.id.nav_home) return true;
+
+            Intent intent = null;
+            if (id == R.id.nav_search) {
+                intent = new Intent(this, SearchActivity.class);
+            }
+            else if (id == R.id.nav_saved) {
+                intent = new Intent(this, SavedActivity.class);
+            }
+            else if (id == R.id.nav_account) {
+                intent = new Intent(this, ProfileActivity.class);
+            }
+
+            if (intent != null) {
+                startActivity(intent);
+                overridePendingTransition(0, 0); // Tắt hiệu ứng chuyển cảnh để mượt hơn
+                return true;
+            }
+            return false;
+        });
     }
 
     // =================================================
@@ -92,13 +131,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // =================================================
-    // LOAD CATEGORY FROM FIREBASE + LOCAL CACHE
+    // LOAD CATEGORY
     // =================================================
     private void loadCategories() {
         categoryRepo.getCategories(new CategoryRepository.Callback() {
             @Override
             public void onSuccess(List<Category> list) {
-
                 categoryAdapter = new CategoryAdapter(HomeActivity.this, list);
                 rvTopics.setAdapter(categoryAdapter);
             }
@@ -111,7 +149,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     // =================================================
-    // TAB UI
+    // TAB UI LOGIC
     // =================================================
     private void setTabSelected(boolean isForYou) {
         if (isForYou) {
@@ -122,7 +160,6 @@ public class HomeActivity extends AppCompatActivity {
             tvTopic.setTextColor(Color.GRAY);
             tvTopic.setTypeface(null, Typeface.NORMAL);
             underlineTopic.setVisibility(View.INVISIBLE);
-
         } else {
             tvTopic.setTextColor(Color.BLACK);
             tvTopic.setTypeface(null, Typeface.BOLD);
