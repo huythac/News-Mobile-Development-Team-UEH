@@ -46,3 +46,4 @@
         android:textStyle="bold"
         android:background="@drawable/bg_follow_button"/>
 </LinearLayout>
+

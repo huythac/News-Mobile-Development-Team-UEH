@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.UI.profile;
+package phivu.ueh.edu.vn.news_app.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,9 +18,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import phivu.ueh.edu.vn.news_app.R;
-import phivu.ueh.edu.vn.news_app.UI.main.HomeActivity;
-import phivu.ueh.edu.vn.news_app.UI.saved.SavedActivity;
-import phivu.ueh.edu.vn.news_app.UI.search.SearchActivity;
+import phivu.ueh.edu.vn.news_app.ui.main.HomeActivity;
+import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
+import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 import phivu.ueh.edu.vn.news_app.data.remote.UserFirebaseDAO;
 import phivu.ueh.edu.vn.news_app.model.User;
 

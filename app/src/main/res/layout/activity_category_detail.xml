@@ -117,5 +117,16 @@
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    <!-- FAB ĐẶT Ở ĐÂY -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabEditBio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/bottomNavigation"
+        android:layout_margin="16dp"
+        android:src="@android:drawable/ic_menu_edit"
+        app:backgroundTint="#8BC34A"
+        android:visibility="gone" />
 
 </LinearLayout>

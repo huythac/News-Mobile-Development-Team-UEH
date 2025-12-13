@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.UI.main;
+package phivu.ueh.edu.vn.news_app.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,14 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
 import java.util.List;
 
+
 import phivu.ueh.edu.vn.news_app.R;
-import phivu.ueh.edu.vn.news_app.UI.profile.ProfileActivity;
-import phivu.ueh.edu.vn.news_app.UI.saved.SavedActivity;
-import phivu.ueh.edu.vn.news_app.UI.search.SearchActivity;
+import phivu.ueh.edu.vn.news_app.auth.SessionManager;
+import phivu.ueh.edu.vn.news_app.ui.profile.ProfileActivity;
+import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
+import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.CategoryRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.FollowCategoryRepository;
@@ -50,6 +53,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        // ===== FAB ADMIN =====
+        FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
+
+        if (SessionManager.isAdmin()) {
+            fabEditBio.setVisibility(View.VISIBLE);
+        } else {
+            fabEditBio.setVisibility(View.GONE);
+        }
         // TAB UI
         tvForYou = findViewById(R.id.tvForYou);
         tvTopic = findViewById(R.id.tvTopic);

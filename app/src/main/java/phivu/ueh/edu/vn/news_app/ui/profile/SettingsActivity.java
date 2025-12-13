@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.UI.profile;
+package phivu.ueh.edu.vn.news_app.ui.profile;
 
 import android.app.Dialog;
 import android.content.Intent;
@@ -17,8 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 
 import phivu.ueh.edu.vn.news_app.R;
-import phivu.ueh.edu.vn.news_app.UI.login.LoginActivity;
-import phivu.ueh.edu.vn.news_app.UI.main.SplashActivity;
+import phivu.ueh.edu.vn.news_app.ui.main.SplashActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 
