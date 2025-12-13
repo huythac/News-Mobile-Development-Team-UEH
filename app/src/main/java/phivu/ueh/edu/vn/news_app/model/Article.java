@@ -71,4 +71,5 @@ public class Article implements Serializable {
         this.categoryId = categoryId;
     }
 
+
 }
