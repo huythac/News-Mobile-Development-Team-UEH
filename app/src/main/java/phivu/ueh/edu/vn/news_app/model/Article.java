@@ -97,4 +97,5 @@ public class Article implements Serializable {
     public void setPublishDate(long publishDate) {
         this.publishDate = publishDate;
     }
+
 }

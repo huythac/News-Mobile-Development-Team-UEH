@@ -56,6 +56,9 @@
         <activity android:name=".ui.main.CategoryDetailActivity"
             android:exported="false" />
 
+        <activity android:name=".ui.search.SearchInputActivity" />
+        <activity android:name=".ui.search.SearchResultActivity" />
+
 
 
     </application>
