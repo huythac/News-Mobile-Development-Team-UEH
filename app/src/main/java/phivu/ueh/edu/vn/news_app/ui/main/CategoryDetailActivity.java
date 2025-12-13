@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.UI.main;
+package phivu.ueh.edu.vn.news_app.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -90,7 +90,6 @@ public class CategoryDetailActivity extends AppCompatActivity {
             }
         });
     }
-
     private void updateFollowButton() {
         boolean isFollowed = followMap.containsKey(categoryId);
 

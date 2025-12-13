@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.UI.main;
+package phivu.ueh.edu.vn.news_app.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 

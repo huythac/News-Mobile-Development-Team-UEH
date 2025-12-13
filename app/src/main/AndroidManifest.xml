@@ -13,7 +13,7 @@
         android:theme="@style/Theme.News_app">
 
         <activity
-            android:name=".UI.main.SplashActivity"
+            android:name=".ui.main.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,38 +22,38 @@
         </activity>
 
         <activity
-            android:name=".UI.main.MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
 
 
         <!-- Màn hình Home — hiển thị danh sách bài báo -->
         <activity
-            android:name=".UI.main.HomeActivity"
+            android:name=".ui.main.HomeActivity"
             android:exported="false" />
 
         <!-- Login -->
         <activity
-            android:name=".UI.login.LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.profile.ProfileActivity"
+            android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.saved.SavedActivity"
+            android:name=".ui.saved.SavedActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.search.SearchActivity"
+            android:name=".ui.search.SearchActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.profile.SettingsActivity"
+            android:name=".ui.profile.SettingsActivity"
             android:exported="false" />
 
         <!-- ActicleDetail -->
-        <activity android:name=".UI.main.ArticleDetailActivity"
+        <activity android:name=".ui.main.ArticleDetailActivity"
             android:exported="false" />
-        <activity android:name=".UI.profile.EditProfileActivity"
+        <activity android:name=".ui.profile.EditProfileActivity"
             android:exported="false" />
-        <activity android:name=".UI.main.CategoryDetailActivity"
+        <activity android:name=".ui.main.CategoryDetailActivity"
             android:exported="false" />
 
 

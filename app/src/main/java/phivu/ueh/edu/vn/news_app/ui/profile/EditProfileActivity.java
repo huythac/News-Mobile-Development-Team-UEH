@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.UI.profile;
+package phivu.ueh.edu.vn.news_app.ui.profile;
 
 import android.os.Bundle;
 import android.widget.Button;
