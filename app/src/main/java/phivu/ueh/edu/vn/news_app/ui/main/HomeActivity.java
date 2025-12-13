@@ -61,6 +61,8 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             fabEditBio.setVisibility(View.GONE);
         }
+
+
         // TAB UI
         tvForYou = findViewById(R.id.tvForYou);
         tvTopic = findViewById(R.id.tvTopic);

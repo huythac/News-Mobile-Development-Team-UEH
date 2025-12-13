@@ -8,6 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -58,10 +65,28 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.tvCategoryDescription.setText(c.getDescription());
         holder.imgCategory.setImageResource(R.drawable.ic_category_placeholder);
 
+        // ===== ĐẾM SỐ BÀI VIẾT =====
+        DatabaseReference articleRef =
+                FirebaseDatabase.getInstance().getReference("articles");
+
+        articleRef.orderByChild("categoryId")
+                .equalTo(c.getId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        long count = snapshot.getChildrenCount();
+                        holder.tvCategoryDescription.setText(count + " bài viết");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        holder.tvCategoryDescription.setText("0 bài viết");
+                    }
+                });
+
         boolean isFollowed = followMap.containsKey(c.getId());
         updateFollowButton(holder, isFollowed);
 
-        // FOLLOW CLICK
         holder.btnFollow.setOnClickListener(v -> {
             boolean currentlyFollowed = followMap.containsKey(c.getId());
 
@@ -78,7 +103,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             notifyItemChanged(holder.getAdapterPosition());
         });
 
-        // ITEM CLICK → mở CategoryDetailActivity
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, CategoryDetailActivity.class);
             intent.putExtra("categoryId", c.getId());
@@ -87,6 +111,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             context.startActivity(intent);
         });
     }
+
 
     private void updateFollowButton(CategoryViewHolder holder, boolean followed) {
         if (followed) {

@@ -28,21 +28,33 @@ public class ArticleFirebaseDAO {
     }
 
     public void fetchAll(final ListListener listener) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override public void onDataChange(DataSnapshot snapshot) {
-                List<Article> out = new ArrayList<>();
-                for (DataSnapshot s : snapshot.getChildren()) {
-                    Article a = s.getValue(Article.class);
-                    if (a != null) {
-                        a.setId(s.getKey());
-                        out.add(a);
+        ref.orderByChild("publishDate")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        List<Article> out = new ArrayList<>();
+
+                        for (DataSnapshot s : snapshot.getChildren()) {
+                            Article a = s.getValue(Article.class);
+                            if (a != null) {
+                                a.setId(s.getKey());
+                                out.add(a);
+                            }
+                        }
+
+                        // 🔹 Firebase trả CŨ → MỚI → đảo lại
+                        java.util.Collections.reverse(out);
+
+                        listener.onLoaded(out);
                     }
-                }
-                listener.onLoaded(out);
-            }
-            @Override public void onCancelled(DatabaseError error) { listener.onError(error.getMessage()); }
-        });
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        listener.onError(error.getMessage());
+                    }
+                });
     }
+
 
     public void fetchById(String id, final SingleListener listener) {
         ref.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -59,26 +71,35 @@ public class ArticleFirebaseDAO {
 
     public void fetchByCategory(String categoryId, ListListener listener) {
 
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("articles");
-
         ref.orderByChild("categoryId").equalTo(categoryId)
-                .get()
-                .addOnSuccessListener(snapshot -> {
-                    List<Article> list = new ArrayList<>();
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        List<Article> list = new ArrayList<>();
 
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        Article a = ds.getValue(Article.class);
-                        if (a != null) {
-                            a.setId(ds.getKey());
-                            list.add(a);
+                        for (DataSnapshot ds : snapshot.getChildren()) {
+                            Article a = ds.getValue(Article.class);
+                            if (a != null) {
+                                a.setId(ds.getKey());
+                                list.add(a);
+                            }
                         }
+
+                        // 🔹 Sort theo publishDate (mới → cũ)
+                        list.sort((a1, a2) ->
+                                Long.compare(a2.getPublishDate(), a1.getPublishDate())
+                        );
+
+                        listener.onLoaded(list);
                     }
 
-                    listener.onLoaded(list);
-                })
-                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        listener.onError(error.getMessage());
+                    }
+                });
     }
+
 
 
 
