@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +44,10 @@ public class HomeActivity extends AppCompatActivity {
     private FollowCategoryRepository followRepo;
 
     private HashMap<String, Boolean> followMap = new HashMap<>();
-    private final String userId = "123"; // TODO: FirebaseAuth.getUid()
+//    private final String userId = "123"; // TODO: FirebaseAuth.getUid()
+
+    private String userId;
+
 
     TextView tvForYou, tvTopic;
     View underlineForYou, underlineTopic;
@@ -52,6 +57,14 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+        } else {
+            finish();
+            return;
+        }
 
         // ===== FAB ADMIN =====
         FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
@@ -173,16 +186,25 @@ public class HomeActivity extends AppCompatActivity {
         categoryRepo.getCategories(new CategoryRepository.Callback() {
             @Override
             public void onSuccess(List<Category> list) {
-                categoryAdapter = new CategoryAdapter(HomeActivity.this, list, followMap);
+                categoryAdapter =
+                        new CategoryAdapter(
+                                HomeActivity.this,
+                                list,
+                                followMap,
+                                userId
+                        );
                 rvTopics.setAdapter(categoryAdapter);
             }
 
             @Override
             public void onError(String err) {
-                Toast.makeText(HomeActivity.this, "Không tải được chủ đề: " + err, Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this,
+                        "Không tải được chủ đề: " + err,
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     // ======================================================
     // TAB UI

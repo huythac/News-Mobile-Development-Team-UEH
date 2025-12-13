@@ -21,6 +21,8 @@ import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.FollowCategoryRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,14 +44,23 @@ public class CategoryDetailActivity extends AppCompatActivity {
     private MaterialButton btnFollow;
 
     private HashMap<String, Boolean> followMap = new HashMap<>();
-    private final String userId = "123";  // TODO: FirebaseAuth.getUid()
 
+    private String userId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category_detail);   // FIX
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        } else {
+            finish();
+            return;
+        }
+
 
         // Nhận dữ liệu từ Adapter
         categoryId = getIntent().getStringExtra("categoryId");
