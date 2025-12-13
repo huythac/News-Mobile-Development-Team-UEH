@@ -69,75 +69,33 @@
         android:background="#EEEEEE"
         android:layout_marginBottom="16dp"/>
 
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <LinearLayout
+            android:id="@+id/containerTopics"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
     <LinearLayout
+        android:id="@+id/containerHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
-
-            <TextView
-                style="@style/SearchTagStyle"
-                android:text="Nghiên cứu AI" />
-
-            <TextView
-                style="@style/SearchTagStyle"
-                android:text="Đạo đức &amp; Chính sách" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
-
-            <TextView
-                style="@style/SearchTagStyle"
-                android:text="Ứng dụng AI" />
-
-            <TextView
-                style="@style/SearchTagStyle"
-                android:text="Máy học" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="12dp">
-            <TextView
-                style="@style/SearchTagStyle"
-                android:text="Xã hội &amp; Tương lai của Công việc" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
+        android:src="@android:drawable/ic_menu_recent_history"
         android:paddingHorizontal="16dp"
-        android:paddingVertical="12dp">
+        android:layout_marginTop="16dp">
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@android:drawable/ic_menu_recent_history"
-            app:tint="#9E9E9E"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="thachquochuy"
-            android:textColor="#333333"
-            android:textSize="16sp"
-            android:layout_marginStart="12dp"/>
     </LinearLayout>
 
 </LinearLayout>

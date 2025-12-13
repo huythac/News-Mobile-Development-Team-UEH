@@ -50,6 +50,7 @@
                 app:tint="#757575"/>
 
             <EditText
+                android:id="@+id/edtFakeSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@null"
@@ -57,10 +58,16 @@
                 android:textColorHint="#9E9E9E"
                 android:textColor="#000000"
                 android:textSize="16sp"
+                android:focusable="false"
+                android:clickable="true"
                 android:layout_marginStart="12dp"
                 android:inputType="text"/>
         </LinearLayout>
-
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"
+            android:layout_marginBottom="16dp"/>
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,42 +78,11 @@
             android:paddingEnd="16dp">
 
             <LinearLayout
+                android:id="@+id/containerTopics"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nghiên cứu AI"
-                    android:textColor="#333333"
-                    android:textSize="14sp"
-                    android:background="@drawable/bg_chip_block"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
-                    android:layout_marginEnd="12dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Đạo đức &amp; Chính sách"
-                    android:textColor="#333333"
-                    android:textSize="14sp"
-                    android:background="@drawable/bg_chip_block"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
-                    android:layout_marginEnd="12dp"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Ứng dụng AI"
-                    android:textColor="#333333"
-                    android:textSize="14sp"
-                    android:background="@drawable/bg_chip_block"
-                    android:paddingHorizontal="20dp"
-                    android:paddingVertical="10dp"
-                    android:layout_marginEnd="12dp"/>
             </LinearLayout>
         </HorizontalScrollView>
 
