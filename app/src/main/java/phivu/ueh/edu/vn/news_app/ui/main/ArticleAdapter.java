@@ -1,5 +1,10 @@
 package phivu.ueh.edu.vn.news_app.ui.main;
 
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -48,7 +53,18 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         holder.tvTitle.setText(article.getTitle());
         holder.tvDescription.setText(article.getDescription());
 
-        // Load image (use Android system placeholder to avoid missing resource)
+        // ✅ HIỂN THỊ NGÀY ĐĂNG
+        long publishDate = article.getPublishDate();
+        if (publishDate > 0) {
+            Date date = new Date(publishDate);
+            SimpleDateFormat sdf =
+                    new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            holder.tvDate.setText(sdf.format(date));
+        } else {
+            holder.tvDate.setText("");
+        }
+
+        // Image
         if (article.getImage() != null && !article.getImage().isEmpty()) {
             Picasso.get()
                     .load(article.getImage())
@@ -59,12 +75,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
 
         holder.itemView.setOnClickListener(v -> {
-            // Ensure target Activity exists in same package (see ArticleDetailActivity below)
             Intent intent = new Intent(context, ArticleDetailActivity.class);
             intent.putExtra("articleId", article.getId());
             context.startActivity(intent);
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -72,14 +88,17 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     }
 
     public static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvDescription;
+        TextView tvTitle, tvDescription, tvDate;
         ImageView imgThumb;
+
 
         public ArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
             tvDescription = itemView.findViewById(R.id.tvDescription);
-            imgThumb = itemView.findViewById(R.id.imgArticleThumb); // ensure id exists in item_article.xml
+            tvDate = itemView.findViewById(R.id.tvDate);
+            imgThumb = itemView.findViewById(R.id.imgArticleThumb);
+
         }
     }
 }

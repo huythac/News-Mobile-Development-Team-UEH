@@ -1,5 +1,6 @@
 package phivu.ueh.edu.vn.news_app.ui.main;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,13 @@ import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.FollowCategoryRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+
 public class CategoryDetailActivity extends AppCompatActivity {
 
     private String categoryId;
@@ -35,6 +43,8 @@ public class CategoryDetailActivity extends AppCompatActivity {
 
     private HashMap<String, Boolean> followMap = new HashMap<>();
     private final String userId = "123";  // TODO: FirebaseAuth.getUid()
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +68,7 @@ public class CategoryDetailActivity extends AppCompatActivity {
         // Ánh xạ view
         ImageView btnBack = findViewById(R.id.btnBack);
         TextView tvCategoryName = findViewById(R.id.tvCategoryName);
-        TextView tvStats = findViewById(R.id.tvCategoryStats);
+
         btnFollow = findViewById(R.id.btnFollowCategory);
 
         rvArticles = findViewById(R.id.rvCategoryArticles);
@@ -66,12 +76,14 @@ public class CategoryDetailActivity extends AppCompatActivity {
 
         // Set UI
         tvCategoryName.setText(categoryName);
-        tvStats.setText("120 bài viết • 14k người theo dõi");
+
 
         btnBack.setOnClickListener(v -> finish());
 
         loadFollowState();
         loadCategoryArticles();
+        loadCategoryStats();
+
 
         btnFollow.setOnClickListener(v -> toggleFollow());
     }
@@ -132,4 +144,31 @@ public class CategoryDetailActivity extends AppCompatActivity {
             }
         });
     }
-}
+
+    private void loadCategoryStats() {
+
+        DatabaseReference articleRef =
+                FirebaseDatabase.getInstance().getReference("articles");
+
+        TextView tvStats = findViewById(R.id.tvCategoryStats);
+
+        articleRef.orderByChild("categoryId")
+                .equalTo(categoryId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        long articleCount = snapshot.getChildrenCount();
+
+                        tvStats.setText(articleCount + " bài viết");
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        tvStats.setText("0 bài viết");
+                    }
+                });
+        }
+
+    }
+

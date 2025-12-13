@@ -4,17 +4,21 @@ import java.io.Serializable;
 
 public class Article implements Serializable {
 
-    private String id;           // Firebase key (String!)
+    private String id;           // Firebase key
     private String title;
     private String image;
-    private String content;      // nội dung dài của bài báo
-    private String description;  // mô tả tóm tắt bài báo
-
+    private String content;      // nội dung dài
+    private String description;  // mô tả tóm tắt
     private String categoryId;
 
+    private long publishDate;    // 🔹 THÊM MỚI: timestamp ngày đăng
+
+    // 🔹 BẮT BUỘC: constructor rỗng cho Firebase
     public Article() { }
 
-    public Article(String id, String title, String image, String content, String description) {
+    // 🔹 Constructor cũ (giữ lại để không lỗi code đang dùng)
+    public Article(String id, String title, String image,
+                   String content, String description) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -22,12 +26,26 @@ public class Article implements Serializable {
         this.description = description;
     }
 
-    // GETTERS - SETTERS
+    // 🔹 Constructor đầy đủ (dùng khi cần)
+    public Article(String id, String title, String image,
+                   String content, String description,
+                   String categoryId, long publishDate) {
+        this.id = id;
+        this.title = title;
+        this.image = image;
+        this.content = content;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.publishDate = publishDate;
+    }
+
+    // ===== GETTERS / SETTERS =====
+
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {   // REQUIRED by Firebase DAO
+    public void setId(String id) {   // REQUIRED by Firebase
         this.id = id;
     }
 
@@ -71,5 +89,13 @@ public class Article implements Serializable {
         this.categoryId = categoryId;
     }
 
+    // 🔹 GET / SET publishDate
+    public long getPublishDate() {
+        return publishDate;
+    }
+
+    public void setPublishDate(long publishDate) {
+        this.publishDate = publishDate;
+    }
 
 }
