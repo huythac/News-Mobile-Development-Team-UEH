@@ -12,24 +12,28 @@ public class Article implements Serializable {
     private String categoryId;
 
     private long publishDate;    // 🔹 THÊM MỚI: timestamp ngày đăng
+    private String authorId;
+    private String authorName;
 
     // 🔹 BẮT BUỘC: constructor rỗng cho Firebase
     public Article() { }
 
     // 🔹 Constructor cũ (giữ lại để không lỗi code đang dùng)
     public Article(String id, String title, String image,
-                   String content, String description) {
+                   String content, String description, String authorId, String authorName) {
         this.id = id;
         this.title = title;
         this.image = image;
         this.content = content;
         this.description = description;
+
     }
 
     // 🔹 Constructor đầy đủ (dùng khi cần)
     public Article(String id, String title, String image,
                    String content, String description,
-                   String categoryId, long publishDate) {
+                   String categoryId, long publishDate,
+                   String authorId, String authorName) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -37,6 +41,9 @@ public class Article implements Serializable {
         this.description = description;
         this.categoryId = categoryId;
         this.publishDate = publishDate;
+        this.authorId = authorId;
+        this.authorName = authorName;
+
     }
 
     // ===== GETTERS / SETTERS =====
@@ -96,6 +103,22 @@ public class Article implements Serializable {
 
     public void setPublishDate(long publishDate) {
         this.publishDate = publishDate;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String id) {   // REQUIRED by Firebase
+        this.authorId= authorId;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String name) {
+        this.authorName = authorName;
     }
 
 }
