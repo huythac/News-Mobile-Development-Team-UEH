@@ -39,5 +39,9 @@ public class FollowCategoryDAO {
         c.close();
         return map;
     }
+    public void clearByUser(String userId) {
+        db.delete("followed_category", "user_id=?", new String[]{userId});
+    }
+
 }
 
