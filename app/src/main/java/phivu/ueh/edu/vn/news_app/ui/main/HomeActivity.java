@@ -44,7 +44,6 @@ public class HomeActivity extends AppCompatActivity {
     private FollowCategoryRepository followRepo;
 
     private HashMap<String, Boolean> followMap = new HashMap<>();
-//    private final String userId = "123"; // TODO: FirebaseAuth.getUid()
 
     private String userId;
 
