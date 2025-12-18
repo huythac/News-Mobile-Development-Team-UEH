@@ -1,73 +1,540 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/article_background">
 
-
-    <!-- Toolbar chứa nút back -->
+    <!-- Toolbar with back button -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/detailToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#8BC34A"
-        android:padding="16dp"
-        android:theme="?attr/actionBarTheme"
-        android:title="Chi tiết bài báo"
-        android:titleTextColor="@android:color/white"
-        app:contentInsetStart="8dp"
-        app:navigationIcon="@drawable/ic_menu_back" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/article_toolbar_background"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:navigationIcon="@drawable/ic_menu_back"
+        app:navigationIconTint="@color/article_toolbar_text"
+        app:title=""
+        app:titleTextColor="@color/article_toolbar_text" />
 
-
-    <!-- Nội dung có thể scroll -->
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <!-- Scrollable content -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="692dp"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/bottom_bar_height"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/article_detail_content_padding"
+            android:paddingBottom="@dimen/article_detail_content_margin_bottom">
+
+            <!-- Header Image -->
+            <ImageView
+                android:id="@+id/imgHeader"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/article_detail_image_height"
+                android:scaleType="centerCrop"
+                android:contentDescription="@string/article_image_description"
+                android:background="@color/article_divider"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:src="@drawable/ic_launcher_background" />
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Title"
+                android:layout_marginTop="@dimen/article_detail_title_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/imgHeader"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="AI Revolutionizes Mobile App Personalization with Advanced Machine Learning Algorithms" />
+
+            <!-- Meta Row Container (Author + Date) -->
+            <LinearLayout
+                android:id="@+id/layoutMeta"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="@dimen/article_detail_meta_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <!-- Author Name -->
+                <TextView
+                    android:id="@+id/tvAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Article.Meta"
+                    tools:text="Phạm Thanh Đạt" />
+
+                <!-- Divider dot -->
+                <TextView
+                    android:id="@+id/tvMetaDivider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" • "
+                    android:textAppearance="@style/TextAppearance.Article.Meta"
+                    android:layout_marginStart="@dimen/spacing_small"
+                    android:layout_marginEnd="@dimen/spacing_small" />
+
+                <!-- Publish Date -->
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Article.Meta"
+                    tools:text="28/11/2025" />
+
+            </LinearLayout>
+
+            <!-- Category Chip (Optional - GONE by default) -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipCategory"
+                style="@style/CategoryChipStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/article_detail_category_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/layoutMeta"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Công nghệ"
+                tools:visibility="visible" />
+
+            <!-- Description (Optional - GONE by default) -->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Description"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/article_detail_description_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/chipCategory"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="AI-powered engines allow mobile apps to adapt instantly to user behavior, creating personalized experiences that increase engagement by up to 300%."
+                tools:visibility="visible" />
+
+            <!-- Content Divider (Optional - only show if description exists) -->
+            <View
+                android:id="@+id/dividerContent"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/article_detail_divider_height"
+                android:background="@color/article_divider"
+                android:visibility="gone"
+                android:layout_marginTop="@dimen/article_detail_description_margin_bottom"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                app:layout_constraintTop_toBottomOf="@id/tvDescription"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="visible" />
+
+            <!-- Content Body -->
+            <TextView
+                android:id="@+id/tvContent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Body"
+                android:layout_marginTop="@dimen/article_detail_content_margin_top"
+                app:layout_constraintTop_toBottomOf="@id/dividerContent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="Mobile applications are undergoing a revolutionary transformation through the integration of artificial intelligence and machine learning technologies. These advanced systems enable apps to learn from user interactions, predict preferences, and deliver highly personalized experiences in real-time.\n\nRecent studies have shown that AI-powered personalization can increase user engagement by up to 300%, significantly improving retention rates and overall user satisfaction. The key to this success lies in the ability of machine learning algorithms to analyze vast amounts of user data and identify patterns that would be impossible for humans to detect.\n\nLeading tech companies are investing heavily in AI research and development, recognizing the competitive advantage that personalized experiences provide. From recommendation engines to predictive text input, AI is becoming an integral part of the mobile app ecosystem.\n\nAs we look toward the future, the potential for AI in mobile applications seems limitless. Emerging technologies such as on-device machine learning and federated learning are making it possible to deliver personalized experiences while maintaining user privacy and data security." />
+
+            <!-- Comments Preview Section -->
+            <LinearLayout
+                android:id="@+id/layoutCommentsPreview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginBottom="@dimen/spacing_large"
+                app:layout_constraintTop_toBottomOf="@id/tvContent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <!-- Header: Title + View All -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/article_detail_padding_horizontal"
+                    android:layout_marginBottom="@dimen/spacing_medium">
+
+                    <TextView
+                        android:id="@+id/tvCommentsPreviewTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.Article.Title"
+                        android:textSize="20sp"
+                        android:text="@string/comments_title"
+                        android:textStyle="bold"
+                        tools:text="Bình luận (120)" />
+
+                    <TextView
+                        android:id="@+id/tvViewAllComments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/comments_view_all"
+                        android:textAppearance="@style/TextAppearance.Article.Meta"
+                        android:textColor="@color/article_text_secondary"
+                        android:textStyle="normal"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="@dimen/spacing_small"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                </LinearLayout>
+
+                <!-- Comment Input Preview (Fake input field) - Moved above comments list -->
+                <LinearLayout
+                    android:id="@+id/layoutCommentInputPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="@dimen/article_detail_padding_horizontal"
+                    android:paddingTop="@dimen/spacing_medium"
+                    android:paddingBottom="@dimen/spacing_medium"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <!-- User Avatar -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="@dimen/comments_sheet_avatar_size"
+                        android:layout_height="@dimen/comments_sheet_avatar_size"
+                        android:layout_marginEnd="@dimen/spacing_medium"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="@android:color/transparent">
+
+                        <ImageView
+                            android:id="@+id/imgPreviewInputAvatar"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/bg_avatar_circle"
+                            app:srcCompat="@mipmap/ic_launcher_round"
+                            tools:src="@mipmap/ic_launcher_round" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Fake Input Field -->
+                    <TextView
+                        android:id="@+id/tvCommentInputPreview"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="40dp"
+                        android:background="@drawable/bg_comment_input_default"
+                        android:paddingHorizontal="@dimen/spacing_medium"
+                        android:paddingVertical="@dimen/spacing_small"
+                        android:textAppearance="@style/TextAppearance.Article.Body"
+                        android:text="@string/comments_input_hint"
+                        android:textColor="@color/article_text_secondary"
+                        android:gravity="center_vertical" />
+
+                </LinearLayout>
+
+                <!-- Preview Comments List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCommentsPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="0dp"
+                    android:paddingTop="@dimen/spacing_medium"
+                    android:paddingBottom="0dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="visible"
+                    tools:listitem="@layout/item_comment"
+                    tools:itemCount="3"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+
+            <!-- Related Articles Section -->
+            <LinearLayout
+                android:id="@+id/layoutRelatedArticles"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/spacing_xl"
+                android:layout_marginBottom="@dimen/spacing_large"
+                android:visibility="visible"
+                app:layout_constraintTop_toBottomOf="@id/layoutCommentsPreview"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:visibility="visible">
+
+                <!-- Header: Title -->
+                <TextView
+                    android:id="@+id/tvRelatedArticlesTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/article_detail_padding_horizontal"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:textAppearance="@style/TextAppearance.Article.Title"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/article_text_primary"
+                    android:fontFamily="@font/mona_sans"
+                    tools:text="Các bài viết khác của Phi Vũ" />
+
+                <!-- Loading State -->
+                <ProgressBar
+                    android:id="@+id/progressRelatedArticles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginVertical="@dimen/spacing_large"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <!-- Empty State -->
+                <TextView
+                    android:id="@+id/tvRelatedArticlesEmpty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="@dimen/article_detail_padding_horizontal"
+                    android:paddingVertical="@dimen/spacing_large"
+                    android:textAppearance="@style/TextAppearance.Article.Body"
+                    android:textColor="@color/article_text_secondary"
+                    android:text="@string/related_articles_empty"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <!-- Error State -->
+                <LinearLayout
+                    android:id="@+id/layoutRelatedArticlesError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/article_detail_padding_horizontal"
+                    android:paddingVertical="@dimen/spacing_large"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    tools:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tvRelatedArticlesError"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.Article.Body"
+                        android:textColor="@color/article_text_secondary"
+                        android:text="@string/related_articles_error"
+                        android:layout_marginBottom="@dimen/spacing_medium" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRelatedArticlesRetry"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/article_retry"
+                        android:textAllCaps="false"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                </LinearLayout>
+
+                <!-- Related Articles List -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvRelatedArticles"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="0dp"
+                    android:paddingTop="0dp"
+                    android:paddingBottom="0dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:visibility="gone"
+                    tools:listitem="@layout/item_article_related"
+                    tools:itemCount="3"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Bottom Action Bar (Fixed when scrolling) -->
+    <FrameLayout
+        android:id="@+id/bottomActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/article_background"
+        android:elevation="@dimen/bottom_bar_elevation">
+
+        <!-- Divider on top -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/article_detail_divider_height"
+            android:background="@color/article_divider"
+            android:layout_gravity="top" />
+
+        <!-- Buttons Container -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/bottom_bar_padding_vertical"
+            android:paddingBottom="@dimen/bottom_bar_padding_vertical"
+            android:paddingHorizontal="@dimen/bottom_bar_padding_horizontal"
+            android:layout_marginTop="@dimen/article_detail_divider_height">
+
+            <!-- Comment Button -->
+        <LinearLayout
+            android:id="@+id/btnComment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/bottom_bar_item_padding">
 
             <ImageView
-                android:id="@+id/imgDetail"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background" />
+                android:id="@+id/iconComment"
+                android:layout_width="@dimen/bottom_bar_icon_size"
+                android:layout_height="@dimen/bottom_bar_icon_size"
+                android:src="@drawable/chat_circle"
+                app:tint="@color/bottom_bar_icon_default" />
 
             <TextView
-                android:id="@+id/tvDetailTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:textSize="22sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDetailContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:lineSpacingExtra="6dp"
-                android:textSize="16sp" />
+                android:text="@string/action_comment"
+                android:textSize="@dimen/bottom_bar_text_size"
+                android:textColor="@color/bottom_bar_text_default"
+                android:layout_marginTop="@dimen/bottom_bar_text_margin_top"
+                android:fontFamily="@font/mona_sans" />
 
         </LinearLayout>
 
-    </ScrollView>
-    <!-- FAB ĐẶT Ở ĐÂY -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabEditBio"
+        <!-- Save Button -->
+        <LinearLayout
+            android:id="@+id/btnSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/bottom_bar_item_padding">
+
+            <ImageView
+                android:id="@+id/iconSave"
+                android:layout_width="@dimen/bottom_bar_icon_size"
+                android:layout_height="@dimen/bottom_bar_icon_size"
+                android:src="@drawable/bookmark_simple"
+                app:tint="@color/bottom_bar_icon_default" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/action_save"
+                android:textSize="@dimen/bottom_bar_text_size"
+                android:textColor="@color/bottom_bar_text_default"
+                android:layout_marginTop="@dimen/bottom_bar_text_margin_top"
+                android:fontFamily="@font/mona_sans" />
+
+        </LinearLayout>
+
+        <!-- Share Button -->
+        <LinearLayout
+            android:id="@+id/btnShare"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground"
+            android:padding="@dimen/bottom_bar_item_padding">
+
+            <ImageView
+                android:id="@+id/iconShare"
+                android:layout_width="@dimen/bottom_bar_icon_size"
+                android:layout_height="@dimen/bottom_bar_icon_size"
+                android:src="@drawable/ic_share"
+                app:tint="@color/bottom_bar_icon_default" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/action_share"
+                android:textSize="@dimen/bottom_bar_text_size"
+                android:textColor="@color/bottom_bar_text_default"
+                android:layout_marginTop="@dimen/bottom_bar_text_margin_top"
+                android:fontFamily="@font/mona_sans" />
+
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <!-- Loading Progress (Optional - for async loading) -->
+    <ProgressBar
+        android:id="@+id/progressLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@id/bottomNavigation"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_edit"
-        app:backgroundTint="#8BC34A"
-        android:visibility="gone" />
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <!-- Error State (Optional - for error handling) -->
+    <LinearLayout
+        android:id="@+id/layoutError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone"
+        android:padding="@dimen/spacing_xl"
+        tools:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Article.Meta"
+            android:text="@string/article_error_loading"
+            android:layout_marginBottom="@dimen/spacing_medium" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/article_retry"
+            android:textAllCaps="false"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
