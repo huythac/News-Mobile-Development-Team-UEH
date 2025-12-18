@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity {
         tvTopic.setOnClickListener(v -> {
             setTabSelected(false);
             showTopics();
-            loadFollowThenCategories(); // 🔥 QUAN TRỌNG
+            loadFollowThenCategories();
         });
     }
 

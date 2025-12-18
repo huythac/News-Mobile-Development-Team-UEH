@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.model.Comment;
+import phivu.ueh.edu.vn.news_app.model.User;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
 
@@ -51,15 +52,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             return;
         }
 
-        // Name
-        String userName = comment.getUserName();
+        User user = comment.getUser();
+
         if (holder.tvCommentName != null) {
-            holder.tvCommentName.setText(
-                    !TextUtils.isEmpty(userName) ? userName : "Người dùng"
-            );
+            String fullName = "Người dùng";
+            if (user != null && !TextUtils.isEmpty(user.getFullName())) {
+                fullName = user.getFullName();
+            }
+            holder.tvCommentName.setText(fullName);
         }
 
-        // Date
         if (holder.tvCommentDate != null) {
             long timestamp = comment.getCreatedAt();
             if (timestamp > 0) {
@@ -69,7 +71,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             }
         }
 
-        // Content
         String content = comment.getContent();
         if (holder.tvCommentContent != null) {
             holder.tvCommentContent.setText(
@@ -77,14 +78,21 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             );
         }
 
-        // Avatar
         if (holder.imgCommentAvatar != null) {
-            String avatarUrl = comment.getUserAvatar();
+            String avatarUrl = "";
+            if (user != null) {
+                avatarUrl = user.getAvatar();
+            }
+
+            // Kiểm tra và load ảnh
             if (!TextUtils.isEmpty(avatarUrl) &&
-                (avatarUrl.startsWith("http://") || avatarUrl.startsWith("https://"))) {
+                    (avatarUrl.startsWith("http://") || avatarUrl.startsWith("https://"))) {
                 try {
-                    int avatarSize = context.getResources()
-                            .getDimensionPixelSize(R.dimen.comments_item_avatar_size);
+                    int avatarSize = 100;
+                    try {
+                        avatarSize = context.getResources().getDimensionPixelSize(R.dimen.comments_item_avatar_size);
+                    } catch (Exception ignored) {}
+
                     Picasso.get()
                             .load(avatarUrl)
                             .resize(avatarSize, avatarSize)
@@ -134,4 +142,3 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         }
     }
 }
-

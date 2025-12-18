@@ -2,7 +2,6 @@ package phivu.ueh.edu.vn.news_app.ui.main;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -39,6 +38,7 @@ import java.util.List;
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.data.repository.CommentRepository;
 import phivu.ueh.edu.vn.news_app.model.Comment;
+import phivu.ueh.edu.vn.news_app.model.User;
 
 public class CommentsBottomSheetDialogFragment extends DialogFragment {
 
@@ -103,7 +103,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
             shouldFocusInput = args.getBoolean(ARG_FOCUS_INPUT, false);
         }
 
-        // Validate articleId
         if (TextUtils.isEmpty(articleId)) {
             Toast.makeText(getContext(), "Lỗi: Không có ID bài viết", Toast.LENGTH_SHORT).show();
             dismiss();
@@ -139,15 +138,12 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
         if (dialog != null) {
             Window window = dialog.getWindow();
             if (window != null) {
-                // Set full height
                 window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT);
-                // Adjust for keyboard
                 window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             }
         }
 
-        // Auto focus input if requested
         if (shouldFocusInput && edtCommentInput != null) {
             edtCommentInput.post(() -> {
                 if (edtCommentInput != null && getContext() != null) {
@@ -157,7 +153,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
                     if (imm != null) {
                         imm.showSoftInput(edtCommentInput, InputMethodManager.SHOW_IMPLICIT);
                     }
-                    // Scroll to input if needed
                     if (layoutCommentInput != null) {
                         layoutCommentInput.post(() -> {
                             if (layoutCommentInput != null) {
@@ -173,7 +168,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        // Remove Firestore listener to prevent leaks
         if (commentsListener != null) {
             commentsListener.remove();
             commentsListener = null;
@@ -195,7 +189,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
         btnClearComment = view.findViewById(R.id.btnClearComment);
         layoutCommentInput = view.findViewById(R.id.layoutCommentInput);
 
-        // Setup user avatar (circular)
         if (currentUser != null && imgInputAvatar != null) {
             String photoUrl = currentUser.getPhotoUrl() != null ?
                     currentUser.getPhotoUrl().toString() : null;
@@ -221,7 +214,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
             imgInputAvatar.setImageResource(android.R.drawable.ic_menu_report_image);
         }
 
-        // Disable input if not logged in
         if (currentUser == null) {
             if (edtCommentInput != null) {
                 edtCommentInput.setEnabled(false);
@@ -234,7 +226,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
                 btnSendComment.setAlpha(1.0f); // Still visible
             }
         } else {
-            // Initialize UI state (no text = disabled, but visible)
             if (edtCommentInput != null) {
                 updateInputUI(edtCommentInput.getText() != null ?
                         edtCommentInput.getText().toString().trim() : "");
@@ -253,7 +244,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
     }
 
     private void setupInputBar() {
-        // Setup text watcher to update UI based on text content
         if (edtCommentInput != null) {
             edtCommentInput.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -271,7 +261,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
             });
         }
 
-        // Clear button click
         if (btnClearComment != null) {
             btnClearComment.setOnClickListener(v -> {
                 if (edtCommentInput != null) {
@@ -284,43 +273,35 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
     private void updateInputUI(String text) {
         boolean hasText = !TextUtils.isEmpty(text);
 
-        // Update clear button visibility
         if (btnClearComment != null) {
             btnClearComment.setVisibility(hasText ? View.VISIBLE : View.GONE);
         }
 
-        // Update send button background and icon
         if (btnSendComment != null) {
-            // Update background (default: gray, active: green)
             int backgroundRes = hasText ?
                     R.drawable.sendbutton_active :
                     R.drawable.sendbutton_default;
             btnSendComment.setBackgroundResource(backgroundRes);
 
-            // Update icon (gray when disabled, white when enabled)
             int iconRes = hasText ?
                     R.drawable.ic_paper_plane :
                     R.drawable.ic_paper_plane_gray;
             btnSendComment.setImageResource(iconRes);
 
-            // Update enabled state (always visible, but disabled when no text)
             btnSendComment.setEnabled(hasText);
-            btnSendComment.setAlpha(1.0f); // Always fully visible
+            btnSendComment.setAlpha(1.0f);
         }
     }
 
     private void setupClickListeners() {
-        // Close button
         if (btnCloseComments != null) {
             btnCloseComments.setOnClickListener(v -> dismiss());
         }
 
-        // Send button
         if (btnSendComment != null) {
             btnSendComment.setOnClickListener(v -> sendComment());
         }
 
-        // Retry button
         if (btnCommentsRetry != null) {
             btnCommentsRetry.setOnClickListener(v -> {
                 hideErrorState();
@@ -337,7 +318,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
 
         showLoadingState();
 
-        // Observe comments in realtime
         commentsListener = commentRepository.observeComments(articleId,
                 new CommentRepository.ListCallback() {
                     @Override
@@ -357,7 +337,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
                         updateTitle(count);
                         updateEmptyState(list.isEmpty());
 
-                        // Notify parent about count change for sync
                         if (countListener != null) {
                             countListener.onCommentsCountChanged(count);
                         }
@@ -369,7 +348,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
                         if (commentList.isEmpty()) {
                             showErrorState(err != null ? err : "Không tải được bình luận");
                         } else {
-                            // If we have cached data, just show a toast
                             Toast.makeText(getContext(),
                                     "Không thể cập nhật bình luận",
                                     Toast.LENGTH_SHORT).show();
@@ -407,7 +385,6 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
             return;
         }
 
-        // Disable send button while sending
         if (btnSendComment != null) {
             btnSendComment.setEnabled(false);
             btnSendComment.setAlpha(0.5f);
@@ -415,52 +392,29 @@ public class CommentsBottomSheetDialogFragment extends DialogFragment {
 
         String userId = currentUser.getUid();
         String userName = currentUser.getDisplayName();
-        if (TextUtils.isEmpty(userName)) {
-            userName = currentUser.getEmail();
-        }
-        if (TextUtils.isEmpty(userName)) {
-            userName = "Người dùng";
+        if (TextUtils.isEmpty(userName)) userName = "Người dùng";
+
+        String userAvatar = "";
+        if (currentUser.getPhotoUrl() != null) {
+            userAvatar = currentUser.getPhotoUrl().toString();
         }
 
-        String userAvatar = currentUser.getPhotoUrl() != null ?
-                currentUser.getPhotoUrl().toString() : null;
+        User sender = new User(userId, userName, currentUser.getEmail(), "USER", userAvatar);
 
-        commentRepository.addComment(articleId, userId, userName, userAvatar, content,
+        commentRepository.addComment(articleId, sender, content,
                 new CommentRepository.SingleCallback() {
                     @Override
                     public void onSuccess(Comment comment) {
-                        // Clear input
-                        if (edtCommentInput != null) {
-                            edtCommentInput.setText("");
-                        }
-
-                        // Hide keyboard
+                        if (edtCommentInput != null) edtCommentInput.setText("");
                         hideKeyboard();
-
-                        // Re-enable send button
-                        if (btnSendComment != null) {
-                            btnSendComment.setEnabled(true);
-                            btnSendComment.setAlpha(1.0f);
-                        }
-
-                        // Scroll to top to show new comment
-                        if (rvComments != null) {
-                            rvComments.smoothScrollToPosition(0);
-                        }
+                        if (btnSendComment != null) btnSendComment.setEnabled(true);
+                        if (rvComments != null) rvComments.smoothScrollToPosition(0);
                     }
 
                     @Override
                     public void onError(String err) {
-                        Toast.makeText(getContext(),
-                                getString(R.string.comments_send_error) + ": " +
-                                        (err != null ? err : "Unknown error"),
-                                Toast.LENGTH_SHORT).show();
-
-                        // Re-enable send button
-                        if (btnSendComment != null) {
-                            btnSendComment.setEnabled(true);
-                            btnSendComment.setAlpha(1.0f);
-                        }
+                        Toast.makeText(getContext(), "Lỗi gửi: " + err, Toast.LENGTH_SHORT).show();
+                        if (btnSendComment != null) btnSendComment.setEnabled(true);
                     }
                 });
     }

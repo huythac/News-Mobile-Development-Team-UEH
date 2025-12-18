@@ -23,19 +23,19 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Tạo bảng Article với ĐẦY ĐỦ các cột mới
+        //  bảng Article với ĐẦY ĐỦ các cột
         db.execSQL("CREATE TABLE IF NOT EXISTS Article (" +
                 "id TEXT PRIMARY KEY, " +
                 "title TEXT, " +
                 "image TEXT, " +
                 "content TEXT, " +
                 "description TEXT, " +
-                "authorId TEXT, " +         // Mới thêm
-                "authorName TEXT, " +       // Mới thêm
-                "categoryId TEXT, " +       // Mới thêm
-                "publishDate INTEGER, " +   // Mới thêm
+                "authorId TEXT, " +
+                "authorName TEXT, " +
+                "categoryId TEXT, " +
+                "publishDate INTEGER, " +
                 "viewed INTEGER DEFAULT 0, " +
-                "saved INTEGER DEFAULT 0, " + // Mới thêm: flag để lưu bài viết
+                "saved INTEGER DEFAULT 0, " +
                 "lastSynced INTEGER DEFAULT 0)");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS Category (" +
@@ -56,7 +56,6 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-        // Migration: Không drop bảng cũ để giữ dữ liệu
         if (oldV < 8) {
             // Tạo bảng mới nếu chưa có (không làm mất dữ liệu)
             db.execSQL("CREATE TABLE IF NOT EXISTS SavedArticle (" +

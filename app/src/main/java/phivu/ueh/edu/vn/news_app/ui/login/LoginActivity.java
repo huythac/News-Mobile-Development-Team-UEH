@@ -101,22 +101,24 @@ public class LoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onError(String err) {
 
-                                            // Login Google lần đầu → tạo user
+                                            String photoUrl = "";
+                                            if (fbUser.getPhotoUrl() != null) {
+                                                photoUrl = fbUser.getPhotoUrl().toString();
+                                            }
+
+                                            // 🔹 FIX: Dùng constructor 5 tham số (có avatar)
                                             User newUser = new User(
                                                     fbUser.getUid(),
                                                     fbUser.getDisplayName(),
                                                     fbUser.getEmail(),
-                                                    "USER"
+                                                    "USER",
+                                                    photoUrl
                                             );
 
                                             userDAO.createUser(newUser);
-
                                             SessionManager.setRole("USER");
 
-                                            startActivity(new Intent(
-                                                    LoginActivity.this,
-                                                    HomeActivity.class
-                                            ));
+                                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                             finish();
                                         }
                                     }

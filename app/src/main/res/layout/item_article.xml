@@ -47,7 +47,7 @@
             android:textSize="14sp"
             android:textColor="@color/article_text_secondary"
             android:fontFamily="@font/mona_sans"
-            tools:text="Pham Thanh Dat" />
+            tools:text="Người viết bài" />
 
     </LinearLayout>
 
@@ -80,7 +80,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/mona_sans"
                 android:lineSpacingExtra="2dp"
-                tools:text="AI Revolutionizes Mobile App Personalization" />
+                tools:text="Tiêu đề" />
 
             <!-- Description -->
             <TextView
@@ -95,7 +95,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/mona_sans"
                 android:lineSpacingExtra="2dp"
-                tools:text="AI-powered engines allow mobile apps to adapt instantly to user behavior, de..." />
+                tools:text="Mô tả..." />
 
         </LinearLayout>
 
@@ -167,7 +167,7 @@
                     android:textColor="@color/article_text_secondary"
                     android:textSize="12sp"
                     android:fontFamily="@font/mona_sans"
-                    tools:text="120" />
+                    tools:text="" />
 
                 <ImageView
                     android:id="@+id/imgComment"
