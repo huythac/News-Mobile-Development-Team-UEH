@@ -93,37 +93,43 @@ public class ArticleDAO {
     // GET BY ID (OFFLINE)
     // =========================
     public Article getById(String id) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        Cursor c = db.rawQuery(
-                "SELECT id, title, image, content, description, authorId, authorName " +
-                        "FROM Article WHERE id=?",
-                new String[]{id}
-        );
-
-        if (c.moveToFirst()) {
-            Article a = new Article();
-            a.setId(c.getString(0));
-            a.setTitle(c.getString(1));
-            a.setImage(c.getString(2));
-            a.setContent(c.getString(3));
-            a.setDescription(c.getString(4));
-            a.setAuthorId(c.getString(5));
-            a.setAuthorName(c.getString(6));
-
-
-            // 🔹 SET AUTHOR
-            a.setAuthorId(c.getString(5));
-            a.setAuthorName(c.getString(6));
-
-            c.close();
-            db.close();
-            return a;
+        if (id == null || id.isEmpty()) {
+            return null;
         }
 
-        c.close();
-        db.close();
-        return null;
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        try {
+            db = dbHelper.getReadableDatabase();
+
+            c = db.rawQuery(
+                    "SELECT id, title, image, content, description, authorId, authorName, categoryId, publishDate " +
+                            "FROM Article WHERE id=?",
+                    new String[]{id}
+            );
+
+            if (c != null && c.moveToFirst() && c.getColumnCount() >= 9) {
+                Article a = new Article();
+                a.setId(c.getString(0));
+                a.setTitle(c.getString(1));
+                a.setImage(c.getString(2));
+                a.setContent(c.getString(3));
+                a.setDescription(c.getString(4));
+                a.setAuthorId(c.getString(5));
+                a.setAuthorName(c.getString(6));
+                a.setCategoryId(c.isNull(7) ? null : c.getString(7));
+                a.setPublishDate(c.isNull(8) ? 0 : c.getLong(8));
+
+                return a;
+            }
+
+            return null;
+        } catch (Exception e) {
+            return null;
+        } finally {
+            if (c != null) c.close();
+            if (db != null) db.close();
+        }
     }
 
     // =========================
@@ -153,6 +159,140 @@ public class ArticleDAO {
                 // 🔹 SET AUTHOR
                 a.setAuthorId(c.getString(5));
                 a.setAuthorName(c.getString(6));
+
+                out.add(a);
+
+            } while (c.moveToNext());
+        }
+
+        c.close();
+        db.close();
+        return out;
+    }
+
+    // =========================
+    // SAVE ARTICLE (for offline reading)
+    // =========================
+    public void saveArticle(Article a) {
+        if (a == null || a.getId() == null || a.getId().isEmpty()) {
+            return;
+        }
+
+        SQLiteDatabase db = null;
+        try {
+            db = dbHelper.getWritableDatabase();
+
+            // First, ensure article exists in DB
+            ContentValues cv = new ContentValues();
+            cv.put("id", a.getId());
+            cv.put("title", a.getTitle() != null ? a.getTitle() : "");
+            cv.put("image", a.getImage() != null ? a.getImage() : "");
+            cv.put("content", a.getContent() != null ? a.getContent() : "");
+            cv.put("description", a.getDescription() != null ? a.getDescription() : "");
+            cv.put("authorId", a.getAuthorId() != null ? a.getAuthorId() : "");
+            cv.put("authorName", a.getAuthorName() != null ? a.getAuthorName() : "");
+            cv.put("categoryId", a.getCategoryId() != null ? a.getCategoryId() : "");
+            cv.put("publishDate", a.getPublishDate() > 0 ? a.getPublishDate() : 0);
+            cv.put("saved", 1); // Mark as saved
+            cv.put("lastSynced", System.currentTimeMillis());
+
+            db.insertWithOnConflict(
+                    "Article",
+                    null,
+                    cv,
+                    SQLiteDatabase.CONFLICT_REPLACE
+            );
+        } catch (Exception e) {
+            // Ignore database errors
+        } finally {
+            if (db != null) db.close();
+        }
+    }
+
+    // =========================
+    // UNSAVE ARTICLE
+    // =========================
+    public void unsaveArticle(String articleId) {
+        if (articleId == null || articleId.isEmpty()) {
+            return;
+        }
+
+        SQLiteDatabase db = null;
+        try {
+            db = dbHelper.getWritableDatabase();
+
+            ContentValues cv = new ContentValues();
+            cv.put("saved", 0);
+
+            db.update(
+                    "Article",
+                    cv,
+                    "id=?",
+                    new String[]{articleId}
+            );
+        } catch (Exception e) {
+            // Ignore database errors
+        } finally {
+            if (db != null) db.close();
+        }
+    }
+
+    // =========================
+    // CHECK IF ARTICLE IS SAVED
+    // =========================
+    public boolean isSaved(String articleId) {
+        if (articleId == null || articleId.isEmpty()) {
+            return false;
+        }
+
+        SQLiteDatabase db = null;
+        Cursor c = null;
+        try {
+            db = dbHelper.getReadableDatabase();
+            c = db.rawQuery(
+                    "SELECT saved FROM Article WHERE id=?",
+                    new String[]{articleId}
+            );
+
+            boolean saved = false;
+            if (c != null && c.moveToFirst() && c.getColumnCount() > 0) {
+                saved = c.getInt(0) == 1;
+            }
+
+            return saved;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            if (c != null) c.close();
+            if (db != null) db.close();
+        }
+    }
+
+    // =========================
+    // GET SAVED ARTICLES
+    // =========================
+    public List<Article> getSavedArticles() {
+        List<Article> out = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor c = db.rawQuery(
+                "SELECT id, title, image, content, description, authorId, authorName, categoryId, publishDate " +
+                        "FROM Article WHERE saved=1 ORDER BY lastSynced DESC",
+                null
+        );
+
+        if (c.moveToFirst()) {
+            do {
+                Article a = new Article();
+                a.setId(c.getString(0));
+                a.setTitle(c.getString(1));
+                a.setImage(c.getString(2));
+                a.setContent(c.getString(3));
+                a.setDescription(c.getString(4));
+                a.setAuthorId(c.getString(5));
+                a.setAuthorName(c.getString(6));
+                a.setCategoryId(c.getString(7));
+                a.setPublishDate(c.getLong(8));
 
                 out.add(a);
 

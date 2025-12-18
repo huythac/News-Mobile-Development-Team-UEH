@@ -110,7 +110,7 @@ public class Article implements Serializable {
     }
 
     public void setAuthorId(String id) {   // REQUIRED by Firebase
-        this.authorId= authorId;
+        this.authorId = id;
     }
 
     public String getAuthorName() {
@@ -118,7 +118,7 @@ public class Article implements Serializable {
     }
 
     public void setAuthorName(String name) {
-        this.authorName = authorName;
+        this.authorName = name;
     }
 
 }

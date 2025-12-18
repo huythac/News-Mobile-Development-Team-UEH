@@ -1,4 +1,4 @@
-package phivu.ueh.edu.vn.news_app.ui.main;
+package phivu.ueh.edu.vn.news_app.ui.saved;
 
 import android.content.Context;
 import android.content.Intent;
@@ -24,36 +24,54 @@ import java.util.concurrent.Executors;
 
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.data.local.article.ArticleDAO;
+import phivu.ueh.edu.vn.news_app.data.local.history.ReadHistoryDAO;
 import phivu.ueh.edu.vn.news_app.data.local.saved.SavedArticleDAO;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.CommentRepository;
+import phivu.ueh.edu.vn.news_app.ui.main.ArticleDetailActivity;
 import phivu.ueh.edu.vn.news_app.model.Article;
 import phivu.ueh.edu.vn.news_app.utils.DateUtils;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+public class SavedArticleAdapter extends RecyclerView.Adapter<SavedArticleAdapter.SavedArticleViewHolder> {
 
     private List<Article> articleList;
     private Context context;
+    private ReadHistoryDAO readHistoryDAO;
     private SavedArticleDAO savedArticleDAO;
     private ArticleDAO articleDAO;
     private ArticleRepository articleRepo;
     private CommentRepository commentRepo;
+    private boolean isHistoryTab;
+    private OnItemDeletedListener deleteListener;
     private ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
     
     // Cache for saved states and comment counts
     private Map<String, Boolean> savedStates = new HashMap<>();
     private Map<String, Integer> commentCounts = new HashMap<>();
 
-    public ArticleAdapter(Context context, List<Article> articleList) {
+    public interface OnItemDeletedListener {
+        void onItemDeleted(String articleId);
+    }
+
+    public SavedArticleAdapter(Context context, List<Article> articleList, boolean isHistoryTab) {
         this.context = context;
         this.articleList = articleList;
+        this.isHistoryTab = isHistoryTab;
         this.savedArticleDAO = new SavedArticleDAO(context);
         this.articleDAO = new ArticleDAO(context);
         this.articleRepo = new ArticleRepository(context);
         this.commentRepo = new CommentRepository();
+        if (isHistoryTab) {
+            this.readHistoryDAO = new ReadHistoryDAO(context);
+        }
         
-        // Load saved states for all articles
+        // Load saved states and comment counts
         loadSavedStates();
+        loadCommentCounts();
+    }
+
+    public void setOnItemDeletedListener(OnItemDeletedListener listener) {
+        this.deleteListener = listener;
     }
 
     public void updateData(List<Article> newList) {
@@ -68,14 +86,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     }
 
     private void loadSavedStates() {
-        if (articleList == null || articleList.isEmpty()) return;
+        if (articleList == null || articleList.isEmpty() || savedArticleDAO == null) return;
         
         backgroundExecutor.execute(() -> {
             Map<String, Boolean> newSavedStates = new HashMap<>();
             for (Article article : articleList) {
                 if (article != null && article.getId() != null) {
                     try {
-                        boolean saved = savedArticleDAO != null && savedArticleDAO.isSaved(article.getId());
+                        boolean saved = savedArticleDAO.isSaved(article.getId());
                         newSavedStates.put(article.getId(), saved);
                     } catch (Exception e) {
                         newSavedStates.put(article.getId(), false);
@@ -135,14 +153,14 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     @NonNull
     @Override
-    public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public SavedArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_article, parent, false);
-        return new ArticleViewHolder(view);
+        return new SavedArticleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SavedArticleViewHolder holder, int position) {
         Article article = articleList.get(position);
         if (article == null) {
             return;
@@ -194,7 +212,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 holder.tvCommentCount.setText(String.valueOf(cachedCount));
             } else {
                 holder.tvCommentCount.setText("0"); // Default to 0 while loading
-                // Load asynchronously (already handled in loadCommentCounts, but also load here if missed)
+                // Load asynchronously
                 if (commentRepo != null) {
                     commentRepo.getCommentCount(articleId, new CommentRepository.CountCallback() {
                         @Override
@@ -211,29 +229,50 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             }
         }
 
-        // Bookmark Icon - Check saved state
+        // Bookmark Icon - Only show for "Lưu" tab
         if (holder.imgBookmark != null) {
-            holder.imgBookmark.setVisibility(View.VISIBLE);
-            
-            // Load initial saved state from cache
-            Boolean cachedState = savedStates.get(articleId);
-            boolean isSaved = cachedState != null && cachedState;
-            updateBookmarkIcon(holder.imgBookmark, isSaved);
-            
-            holder.imgBookmark.setOnClickListener(v -> {
-                toggleBookmark(article, holder.imgBookmark, position);
-            });
+            if (isHistoryTab) {
+                // History tab: Hide bookmark
+                holder.imgBookmark.setVisibility(View.GONE);
+            } else {
+                // Saved tab: Show bookmark with save/unsave logic
+                holder.imgBookmark.setVisibility(View.VISIBLE);
+                
+                // Load initial saved state from cache
+                Boolean cachedState = savedStates.get(articleId);
+                boolean isSaved = cachedState != null && cachedState;
+                updateBookmarkIcon(holder.imgBookmark, isSaved);
+                
+                holder.imgBookmark.setOnClickListener(v -> {
+                    toggleBookmark(article, holder.imgBookmark, position);
+                });
+            }
         }
 
-        // Thumbnail Image - Resize to prevent "too large bitmap" error
+        // Delete Icon - Only show for "Lịch sử đọc" tab
+        if (holder.imgDelete != null) {
+            if (isHistoryTab) {
+                // History tab: Show delete icon
+                holder.imgDelete.setVisibility(View.VISIBLE);
+                holder.imgDelete.setOnClickListener(v -> {
+                    if (!TextUtils.isEmpty(articleId) && readHistoryDAO != null) {
+                        deleteFromHistory(articleId, position);
+                    }
+                });
+            } else {
+                // Saved tab: Hide delete icon
+                holder.imgDelete.setVisibility(View.GONE);
+            }
+        }
+
+        // Thumbnail Image
         if (holder.imgThumb != null) {
             String imageUrl = article.getImage();
             if (!TextUtils.isEmpty(imageUrl) &&
                 (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))) {
                 try {
-                    // Resize image for thumbnail (100dp x 70dp from layout)
-                    int thumbWidth = 200; // pixels
-                    int thumbHeight = 140; // pixels
+                    int thumbWidth = 200;
+                    int thumbHeight = 140;
                     
                     Picasso.get()
                             .load(imageUrl)
@@ -243,8 +282,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                             .placeholder(android.R.drawable.ic_menu_report_image)
                             .error(android.R.drawable.ic_menu_report_image)
                             .into(holder.imgThumb);
-                } catch (OutOfMemoryError e) {
-                    holder.imgThumb.setImageResource(android.R.drawable.ic_menu_report_image);
                 } catch (Exception e) {
                     holder.imgThumb.setImageResource(android.R.drawable.ic_menu_report_image);
                 }
@@ -253,7 +290,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             }
         }
 
-        // Author Avatar (if available)
+        // Author Avatar
         if (holder.imgAvatarSmall != null) {
             // Use person icon as default placeholder if no avatar available
             holder.imgAvatarSmall.setImageResource(android.R.drawable.ic_menu_myplaces);
@@ -262,8 +299,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
         // Click listener - Navigate to Article Detail
         holder.itemView.setOnClickListener(v -> {
-            // Don't navigate if clicking on bookmark
-            if (holder.imgBookmark != null && v == holder.imgBookmark) {
+            // Don't navigate if clicking on bookmark or delete
+            if ((holder.imgBookmark != null && v == holder.imgBookmark) ||
+                (holder.imgDelete != null && v == holder.imgDelete)) {
                 return;
             }
             if (!TextUtils.isEmpty(articleId)) {
@@ -275,7 +313,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     }
 
     private void toggleBookmark(Article article, ImageView bookmarkIcon, int position) {
-        if (article == null || article.getId() == null) {
+        if (article == null || article.getId() == null || savedArticleDAO == null) {
             return;
         }
 
@@ -287,15 +325,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             try {
                 if (isCurrentlySaved) {
                     // Unsave: Remove from SavedArticle table
-                    if (savedArticleDAO != null) {
-                        savedArticleDAO.unsaveArticle(articleId);
-                    }
+                    savedArticleDAO.unsaveArticle(articleId);
                     savedStates.put(articleId, false);
 
                     if (context instanceof android.app.Activity) {
                         ((android.app.Activity) context).runOnUiThread(() -> {
                             updateBookmarkIcon(bookmarkIcon, false);
                             Toast.makeText(context, "Đã bỏ lưu bài viết", Toast.LENGTH_SHORT).show();
+                            // Remove from list if in Saved tab
+                            if (!isHistoryTab) {
+                                articleList.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, articleList.size());
+                            }
                         });
                     }
                 } else {
@@ -339,9 +381,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                         });
                     } else {
                         // Article exists, just save to SavedArticle
-                        if (savedArticleDAO != null) {
-                            savedArticleDAO.saveArticle(articleId);
-                        }
+                        savedArticleDAO.saveArticle(articleId);
                         savedStates.put(articleId, true);
 
                         if (context instanceof android.app.Activity) {
@@ -378,12 +418,45 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return articleList == null ? 0 : articleList.size();
+    private void deleteFromHistory(String articleId, int position) {
+        if (readHistoryDAO == null || TextUtils.isEmpty(articleId)) {
+            return;
+        }
+
+        // Delete from history on background thread
+        backgroundExecutor.execute(() -> {
+            try {
+                readHistoryDAO.deleteFromHistory(articleId);
+                // Remove from list
+                if (context instanceof android.app.Activity) {
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        articleList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, articleList.size());
+                        
+                        if (deleteListener != null) {
+                            deleteListener.onItemDeleted(articleId);
+                        }
+                        
+                        Toast.makeText(context, "Đã xóa khỏi lịch sử", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            } catch (Exception e) {
+                if (context instanceof android.app.Activity) {
+                    ((android.app.Activity) context).runOnUiThread(() -> {
+                        Toast.makeText(context, "Lỗi khi xóa", Toast.LENGTH_SHORT).show();
+                    });
+                }
+            }
+        });
     }
 
-    public static class ArticleViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public int getItemCount() {
+        return articleList != null ? articleList.size() : 0;
+    }
+
+    static class SavedArticleViewHolder extends RecyclerView.ViewHolder {
         ImageView imgAvatarSmall;
         TextView tvAuthorName;
         TextView tvTitle;
@@ -394,9 +467,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         ImageView imgComment;
         TextView tvCommentCount;
         ImageView imgBookmark;
-        ImageView imgDelete; // For history tab only
+        ImageView imgDelete;
 
-        public ArticleViewHolder(@NonNull View itemView) {
+        public SavedArticleViewHolder(@NonNull View itemView) {
             super(itemView);
             imgAvatarSmall = itemView.findViewById(R.id.imgAvatarSmall);
             tvAuthorName = itemView.findViewById(R.id.tvAuthorName);

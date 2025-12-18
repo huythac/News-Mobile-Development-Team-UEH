@@ -14,10 +14,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,31 +32,30 @@ import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.data.local.article.ArticleDAO;
 import phivu.ueh.edu.vn.news_app.data.local.saved.SavedArticleDAO;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
-import phivu.ueh.edu.vn.news_app.data.repository.CommentRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
-import phivu.ueh.edu.vn.news_app.utils.DateUtils;
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+public class RelatedArticlesAdapter extends RecyclerView.Adapter<RelatedArticlesAdapter.RelatedArticleViewHolder> {
 
     private List<Article> articleList;
     private Context context;
-    private SavedArticleDAO savedArticleDAO;
     private ArticleDAO articleDAO;
+    private SavedArticleDAO savedArticleDAO;
     private ArticleRepository articleRepo;
-    private CommentRepository commentRepo;
-    private ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
+    private FirebaseFirestore firestore;
+    private ExecutorService backgroundExecutor;
     
     // Cache for saved states and comment counts
     private Map<String, Boolean> savedStates = new HashMap<>();
     private Map<String, Integer> commentCounts = new HashMap<>();
 
-    public ArticleAdapter(Context context, List<Article> articleList) {
+    public RelatedArticlesAdapter(Context context, List<Article> articleList) {
         this.context = context;
         this.articleList = articleList;
-        this.savedArticleDAO = new SavedArticleDAO(context);
         this.articleDAO = new ArticleDAO(context);
+        this.savedArticleDAO = new SavedArticleDAO(context);
         this.articleRepo = new ArticleRepository(context);
-        this.commentRepo = new CommentRepository();
+        this.firestore = FirebaseFirestore.getInstance();
+        this.backgroundExecutor = Executors.newSingleThreadExecutor();
         
         // Load saved states for all articles
         loadSavedStates();
@@ -58,13 +63,9 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     public void updateData(List<Article> newList) {
         this.articleList = newList;
-        // Clear caches when data is updated
-        this.savedStates.clear();
-        this.commentCounts.clear();
-        notifyDataSetChanged();
-        // Reload saved states and comment counts
+        // Reload saved states when data changes
         loadSavedStates();
-        loadCommentCounts();
+        notifyDataSetChanged();
     }
 
     private void loadSavedStates() {
@@ -91,64 +92,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         });
     }
 
-    private void loadCommentCounts() {
-        if (articleList == null || articleList.isEmpty() || commentRepo == null) return;
-        
-        for (Article article : articleList) {
-            if (article != null && article.getId() != null) {
-                String articleId = article.getId();
-                // Check cache first
-                if (commentCounts.containsKey(articleId)) {
-                    continue; // Already loaded
-                }
-                
-                // Load from Firestore
-                commentRepo.getCommentCount(articleId, new CommentRepository.CountCallback() {
-                    @Override
-                    public void onCount(int count) {
-                        commentCounts.put(articleId, count);
-                        // Update specific item
-                        if (context instanceof android.app.Activity) {
-                            ((android.app.Activity) context).runOnUiThread(() -> {
-                                int position = findArticlePosition(articleId);
-                                if (position >= 0) {
-                                    notifyItemChanged(position);
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    private int findArticlePosition(String articleId) {
-        if (articleList == null || articleId == null) return -1;
-        for (int i = 0; i < articleList.size(); i++) {
-            Article article = articleList.get(i);
-            if (article != null && articleId.equals(article.getId())) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
     @NonNull
     @Override
-    public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RelatedArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_article, parent, false);
-        return new ArticleViewHolder(view);
+                .inflate(R.layout.item_article_related, parent, false);
+        return new RelatedArticleViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RelatedArticleViewHolder holder, int position) {
         Article article = articleList.get(position);
         if (article == null) {
             return;
         }
 
         String articleId = article.getId();
+        if (TextUtils.isEmpty(articleId)) {
+            return;
+        }
 
         // Author Name
         String authorName = article.getAuthorName();
@@ -177,15 +139,25 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             }
         }
 
-        // Date - Use shared DateUtils for consistency
+        // Date - Format: "Thứ 6, 28 tháng 11, 2025"
         if (holder.tvDate != null) {
             long publishDate = article.getPublishDate();
-            String formattedDate = DateUtils.formatPublishDate(publishDate);
-            holder.tvDate.setText(formattedDate);
+            if (publishDate > 0) {
+                try {
+                    Date date = new Date(publishDate);
+                    String formattedDate = formatDateVietnamese(date);
+                    holder.tvDate.setText(formattedDate);
+                } catch (Exception e) {
+                    holder.tvDate.setText("");
+                }
+            } else {
+                holder.tvDate.setText("");
+            }
         }
 
-        // Comment Count - Load from CommentRepository
+        // Comment Count - Query from Firestore (always show, even if 0)
         if (holder.layoutCommentCount != null && holder.tvCommentCount != null) {
+            // Always show layout
             holder.layoutCommentCount.setVisibility(View.VISIBLE);
             
             // Check cache first
@@ -193,85 +165,102 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             if (cachedCount != null) {
                 holder.tvCommentCount.setText(String.valueOf(cachedCount));
             } else {
-                holder.tvCommentCount.setText("0"); // Default to 0 while loading
-                // Load asynchronously (already handled in loadCommentCounts, but also load here if missed)
-                if (commentRepo != null) {
-                    commentRepo.getCommentCount(articleId, new CommentRepository.CountCallback() {
-                        @Override
-                        public void onCount(int count) {
-                            commentCounts.put(articleId, count);
-                            if (holder.getAdapterPosition() == position && articleId.equals(article.getId())) {
-                                if (holder.tvCommentCount != null) {
-                                    holder.tvCommentCount.setText(String.valueOf(count));
-                                }
-                            }
+                // Show 0 while loading
+                holder.tvCommentCount.setText("0");
+                // Query from Firestore
+                loadCommentCount(articleId, count -> {
+                    if (holder.getAdapterPosition() == position && articleId.equals(article.getId())) {
+                        commentCounts.put(articleId, count);
+                        if (holder.tvCommentCount != null) {
+                            holder.tvCommentCount.setText(String.valueOf(count));
                         }
-                    });
-                }
+                    }
+                });
             }
         }
 
         // Bookmark Icon - Check saved state
         if (holder.imgBookmark != null) {
-            holder.imgBookmark.setVisibility(View.VISIBLE);
-            
-            // Load initial saved state from cache
-            Boolean cachedState = savedStates.get(articleId);
-            boolean isSaved = cachedState != null && cachedState;
+            Boolean isSaved = savedStates.get(articleId);
+            if (isSaved == null) {
+                isSaved = false;
+            }
             updateBookmarkIcon(holder.imgBookmark, isSaved);
-            
-            holder.imgBookmark.setOnClickListener(v -> {
-                toggleBookmark(article, holder.imgBookmark, position);
-            });
         }
 
-        // Thumbnail Image - Resize to prevent "too large bitmap" error
-        if (holder.imgThumb != null) {
+        // Header Image - Resize to prevent "too large bitmap" error
+        if (holder.imgHeader != null) {
             String imageUrl = article.getImage();
             if (!TextUtils.isEmpty(imageUrl) &&
                 (imageUrl.startsWith("http://") || imageUrl.startsWith("https://"))) {
                 try {
-                    // Resize image for thumbnail (100dp x 70dp from layout)
-                    int thumbWidth = 200; // pixels
-                    int thumbHeight = 140; // pixels
+                    // Get screen width for header image (200dp height in layout)
+                    int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+                    int imageHeight = (int) (200 * context.getResources().getDisplayMetrics().density);
                     
                     Picasso.get()
                             .load(imageUrl)
-                            .resize(thumbWidth, thumbHeight)
+                            .resize(screenWidth, imageHeight)
                             .onlyScaleDown()
                             .centerCrop()
                             .placeholder(android.R.drawable.ic_menu_report_image)
                             .error(android.R.drawable.ic_menu_report_image)
-                            .into(holder.imgThumb);
+                            .into(holder.imgHeader);
                 } catch (OutOfMemoryError e) {
-                    holder.imgThumb.setImageResource(android.R.drawable.ic_menu_report_image);
+                    holder.imgHeader.setImageResource(android.R.drawable.ic_menu_report_image);
                 } catch (Exception e) {
-                    holder.imgThumb.setImageResource(android.R.drawable.ic_menu_report_image);
+                    holder.imgHeader.setImageResource(android.R.drawable.ic_menu_report_image);
                 }
             } else {
-                holder.imgThumb.setImageResource(android.R.drawable.ic_menu_report_image);
+                holder.imgHeader.setImageResource(android.R.drawable.ic_menu_report_image);
             }
         }
 
-        // Author Avatar (if available)
-        if (holder.imgAvatarSmall != null) {
-            // Use person icon as default placeholder if no avatar available
-            holder.imgAvatarSmall.setImageResource(android.R.drawable.ic_menu_myplaces);
-            // TODO: Load author avatar from Article model if available in the future
+        // Bookmark click listener (set first to prevent item click)
+        if (holder.imgBookmark != null) {
+            holder.imgBookmark.setOnClickListener(v -> {
+                v.setTag("bookmark_click");
+                toggleBookmark(article, holder.imgBookmark, position);
+            });
         }
-
-        // Click listener - Navigate to Article Detail
+        
+        // Click listener - Navigate to Article Detail (but not when clicking bookmark)
         holder.itemView.setOnClickListener(v -> {
-            // Don't navigate if clicking on bookmark
-            if (holder.imgBookmark != null && v == holder.imgBookmark) {
+            // Check if click originated from bookmark
+            if (holder.imgBookmark != null && 
+                (v == holder.imgBookmark || "bookmark_click".equals(v.getTag()))) {
                 return;
             }
-            if (!TextUtils.isEmpty(articleId)) {
+            String id = article.getId();
+            if (!TextUtils.isEmpty(id)) {
                 Intent intent = new Intent(context, ArticleDetailActivity.class);
-                intent.putExtra("articleId", articleId);
+                intent.putExtra("articleId", id);
                 context.startActivity(intent);
             }
         });
+    }
+
+    private void loadCommentCount(String articleId, CommentCountCallback callback) {
+        if (TextUtils.isEmpty(articleId) || firestore == null) {
+            if (callback != null) callback.onCount(0);
+            return;
+        }
+
+        firestore.collection("articles")
+                .document(articleId)
+                .collection("comments")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int count = querySnapshot != null ? querySnapshot.size() : 0;
+                    if (callback != null) {
+                        callback.onCount(count);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) {
+                        callback.onCount(0);
+                    }
+                });
     }
 
     private void toggleBookmark(Article article, ImageView bookmarkIcon, int position) {
@@ -291,7 +280,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                         savedArticleDAO.unsaveArticle(articleId);
                     }
                     savedStates.put(articleId, false);
-
+                    
                     if (context instanceof android.app.Activity) {
                         ((android.app.Activity) context).runOnUiThread(() -> {
                             updateBookmarkIcon(bookmarkIcon, false);
@@ -343,7 +332,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                             savedArticleDAO.saveArticle(articleId);
                         }
                         savedStates.put(articleId, true);
-
+                        
                         if (context instanceof android.app.Activity) {
                             ((android.app.Activity) context).runOnUiThread(() -> {
                                 updateBookmarkIcon(bookmarkIcon, true);
@@ -364,13 +353,15 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     private void updateBookmarkIcon(ImageView icon, boolean isSaved) {
         if (icon == null) return;
-
+        
         try {
             if (isSaved) {
-                icon.setImageResource(R.drawable.bookmarks); // Solid icon
+                // Solid bookmark with green color
+                icon.setImageResource(R.drawable.bookmarks);
                 icon.setColorFilter(context.getResources().getColor(R.color.bookmark_saved));
             } else {
-                icon.setImageResource(R.drawable.bookmark_simple); // Outline icon
+                // Outline bookmark with gray color
+                icon.setImageResource(R.drawable.bookmark_simple);
                 icon.setColorFilter(context.getResources().getColor(R.color.bookmark_default));
             }
         } catch (Exception e) {
@@ -378,37 +369,68 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
     }
 
-    @Override
-    public int getItemCount() {
-        return articleList == null ? 0 : articleList.size();
+    private String formatDateVietnamese(Date date) {
+        if (date == null) {
+            return "";
+        }
+        
+        try {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            
+            // Day of week names in Vietnamese
+            String[] dayNames = {"Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"};
+            // Month names in Vietnamese
+            String[] monthNames = {"tháng 1", "tháng 2", "tháng 3", "tháng 4", "tháng 5", "tháng 6",
+                    "tháng 7", "tháng 8", "tháng 9", "tháng 10", "tháng 11", "tháng 12"};
+            
+            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+            int day = cal.get(Calendar.DAY_OF_MONTH);
+            int month = cal.get(Calendar.MONTH);
+            int year = cal.get(Calendar.YEAR);
+            
+            String dayName = dayNames[dayOfWeek - 1];
+            String monthName = monthNames[month];
+            
+            return String.format(Locale.getDefault(), "%s, %d %s, %d", dayName, day, monthName, year);
+        } catch (Exception e) {
+            // Fallback to simple format
+            SimpleDateFormat sdf = new SimpleDateFormat("d/M/yyyy", Locale.getDefault());
+            return sdf.format(date);
+        }
     }
 
-    public static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        ImageView imgAvatarSmall;
+    @Override
+    public int getItemCount() {
+        return articleList != null ? articleList.size() : 0;
+    }
+
+    interface CommentCountCallback {
+        void onCount(int count);
+    }
+
+    static class RelatedArticleViewHolder extends RecyclerView.ViewHolder {
         TextView tvAuthorName;
         TextView tvTitle;
         TextView tvDescription;
         TextView tvDate;
-        ImageView imgThumb;
+        ImageView imgHeader;
         LinearLayout layoutCommentCount;
-        ImageView imgComment;
+        ImageView imgCommentIcon;
         TextView tvCommentCount;
         ImageView imgBookmark;
-        ImageView imgDelete; // For history tab only
 
-        public ArticleViewHolder(@NonNull View itemView) {
+        public RelatedArticleViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgAvatarSmall = itemView.findViewById(R.id.imgAvatarSmall);
-            tvAuthorName = itemView.findViewById(R.id.tvAuthorName);
-            tvTitle = itemView.findViewById(R.id.tvTitle);
-            tvDescription = itemView.findViewById(R.id.tvDescription);
-            tvDate = itemView.findViewById(R.id.tvDate);
-            imgThumb = itemView.findViewById(R.id.imgArticleThumb);
+            tvAuthorName = itemView.findViewById(R.id.tvRelatedAuthorName);
+            tvTitle = itemView.findViewById(R.id.tvRelatedTitle);
+            tvDescription = itemView.findViewById(R.id.tvRelatedDescription);
+            tvDate = itemView.findViewById(R.id.tvRelatedDate);
+            imgHeader = itemView.findViewById(R.id.imgRelatedHeader);
             layoutCommentCount = itemView.findViewById(R.id.layoutCommentCount);
-            imgComment = itemView.findViewById(R.id.imgComment);
-            tvCommentCount = itemView.findViewById(R.id.tvCommentCount);
-            imgBookmark = itemView.findViewById(R.id.imgBookmark);
-            imgDelete = itemView.findViewById(R.id.imgDelete);
+            imgCommentIcon = itemView.findViewById(R.id.imgRelatedCommentIcon);
+            tvCommentCount = itemView.findViewById(R.id.tvRelatedCommentCount);
+            imgBookmark = itemView.findViewById(R.id.imgRelatedBookmark);
         }
     }
 }

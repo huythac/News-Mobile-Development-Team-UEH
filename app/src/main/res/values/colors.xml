@@ -2,4 +2,35 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    
+    <!-- Article Detail Screen Colors -->
+    <color name="article_background">#FFFFFFFF</color>
+    <color name="article_text_primary">#FF000000</color>
+    <color name="article_text_secondary">#FF757575</color>
+    <color name="article_divider">#FFE0E0E0</color>
+    
+    <!-- Category Chip Colors -->
+    <color name="article_chip_background">#FFF5F5F5</color>
+    <color name="article_chip_text">#FF333333</color>
+    
+    <!-- Toolbar Colors -->
+    <color name="article_toolbar_background">#FFFFFFFF</color>
+    <color name="article_toolbar_text">#FF000000</color>
+    
+    <!-- Bottom Action Bar Colors -->
+    <color name="bottom_bar_icon_default">#FF757575</color>
+    <color name="bottom_bar_icon_selected">#FF000000</color>
+    <color name="bottom_bar_text_default">#FF757575</color>
+    <color name="bottom_bar_text_selected">#FF000000</color>
+    
+    <!-- Comments Input Colors -->
+    <color name="comment_input_background_default">#F5F5F5</color>
+    <color name="comment_input_background_focused">#FFFFFF</color>
+    <color name="comment_input_border_focused">#2196F3</color>
+    <color name="comment_send_button_default">#FF757575</color>
+    <color name="comment_send_button_active">#4CAF50</color>
+    
+    <!-- Bookmark Colors -->
+    <color name="bookmark_default">#FF757575</color>
+    <color name="bookmark_saved">#84CC16</color>
 </resources>
