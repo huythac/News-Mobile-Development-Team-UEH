@@ -101,11 +101,9 @@ public class MainActivity extends AppCompatActivity {
      * LOGIN + MIGRATE (ADMIN ONLY)
      */
     private void checkAndSaveUser(FirebaseUser firebaseUser) {
-
         String uid = firebaseUser.getUid();
 
         userDAO.getUser(uid, new UserFirebaseDAO.SingleListener() {
-
             @Override
             public void onLoaded(User user) {
                 goToHome();
@@ -113,13 +111,19 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onError(String err) {
+                // Lấy ảnh từ Google
+                String photoUrl = "";
+                if (firebaseUser.getPhotoUrl() != null) {
+                    photoUrl = firebaseUser.getPhotoUrl().toString();
+                }
+
+                // 🔹 FIX: Truyền thêm photoUrl vào constructor
                 User newUser = new User(
                         uid,
-                        firebaseUser.getDisplayName() != null
-                                ? firebaseUser.getDisplayName()
-                                : "No Name",
+                        firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "No Name",
                         firebaseUser.getEmail(),
-                        "USER"
+                        "USER",
+                        photoUrl
                 );
 
                 userDAO.createUser(newUser);

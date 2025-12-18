@@ -6,24 +6,21 @@ public class Comment implements Serializable {
 
     private String id;              // Firebase document ID
     private String articleId;       // ID của bài viết
-    private String userId;          // ID của user comment
-    private String userName;        // Tên user
-    private String userAvatar;     // URL avatar user
-    private String content;         // Nội dung comment
-    private long createdAt;        // Timestamp (milliseconds)
 
-    // 🔹 BẮT BUỘC: constructor rỗng cho Firebase
+    // 🔹 THAY ĐỔI LỚN: Dùng đối tượng User thay vì lưu lẻ tẻ
+    private User user;
+
+    private String content;         // Nội dung comment
+    private long createdAt;         // Timestamp (milliseconds)
+
     public Comment() {
     }
 
-    // Constructor đầy đủ
-    public Comment(String id, String articleId, String userId, String userName,
-                   String userAvatar, String content, long createdAt) {
+    // Constructor cập nhật
+    public Comment(String id, String articleId, User user, String content, long createdAt) {
         this.id = id;
         this.articleId = articleId;
-        this.userId = userId;
-        this.userName = userName;
-        this.userAvatar = userAvatar;
+        this.user = user;
         this.content = content;
         this.createdAt = createdAt;
     }
@@ -46,28 +43,14 @@ public class Comment implements Serializable {
         this.articleId = articleId;
     }
 
-    public String getUserId() {
-        return userId;
+    // 🔹 Getter cho User object
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserAvatar() {
-        return userAvatar;
-    }
-
-    public void setUserAvatar(String userAvatar) {
-        this.userAvatar = userAvatar;
+    // 🔹 Setter cho User object
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getContent() {
@@ -86,4 +69,3 @@ public class Comment implements Serializable {
         this.createdAt = createdAt;
     }
 }
-

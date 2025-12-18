@@ -47,15 +47,20 @@ public class EditProfileActivity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String newBio = edtBio.getText().toString().trim();
 
-            // Nếu user chưa tồn tại trong Firestore (trường hợp hiếm)
             if (currentUser == null) {
+                // Lấy ảnh từ Google
+                String photoUrl = "";
+                if (fbUser.getPhotoUrl() != null) {
+                    photoUrl = fbUser.getPhotoUrl().toString();
+                }
+
+                // 🔹 FIX: Truyền thêm photoUrl
                 currentUser = new User(
                         fbUser.getUid(),
-                        fbUser.getDisplayName() != null
-                                ? fbUser.getDisplayName()
-                                : "No Name",
+                        fbUser.getDisplayName() != null ? fbUser.getDisplayName() : "No Name",
                         fbUser.getEmail(),
-                        "USER"
+                        "USER",
+                        photoUrl
                 );
             }
 

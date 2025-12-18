@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import phivu.ueh.edu.vn.news_app.model.Comment;
+import phivu.ueh.edu.vn.news_app.model.User;
 
 public class CommentFirebaseDAO {
 
@@ -35,9 +36,7 @@ public class CommentFirebaseDAO {
     // =========================
     public ListenerRegistration observeComments(String articleId, ListListener listener) {
         if (articleId == null || articleId.trim().isEmpty()) {
-            if (listener != null) {
-                listener.onError("Article ID is null or empty");
-            }
+            if (listener != null) listener.onError("Article ID is null");
             return null;
         }
 
@@ -47,21 +46,18 @@ public class CommentFirebaseDAO {
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener((snapshot, error) -> {
                     if (error != null) {
-                        if (listener != null) {
-                            listener.onError(error.getMessage());
-                        }
+                        if (listener != null) listener.onError(error.getMessage());
                         return;
                     }
 
                     if (snapshot == null) {
-                        if (listener != null) {
-                            listener.onLoaded(new ArrayList<>());
-                        }
+                        if (listener != null) listener.onLoaded(new ArrayList<>());
                         return;
                     }
 
                     List<Comment> comments = new ArrayList<>();
                     for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        // Firestore tự động map JSON nested "user" vào đối tượng User trong Comment
                         Comment comment = doc.toObject(Comment.class);
                         if (comment != null) {
                             comment.setId(doc.getId());
@@ -69,36 +65,37 @@ public class CommentFirebaseDAO {
                         }
                     }
 
-                    if (listener != null) {
-                        listener.onLoaded(comments);
-                    }
+                    if (listener != null) listener.onLoaded(comments);
                 });
     }
 
     // =========================
-    // ADD COMMENT
+    // ADD COMMENT (CẬP NHẬT: Nhận User object)
     // =========================
-    public void addComment(String articleId, String userId, String userName,
-                          String userAvatar, String content, SingleListener listener) {
+    public void addComment(String articleId, User user, String content, SingleListener listener) {
         if (articleId == null || articleId.trim().isEmpty()) {
-            if (listener != null) {
-                listener.onError("Article ID is null or empty");
-            }
+            if (listener != null) listener.onError("Article ID is null");
             return;
         }
 
         if (content == null || content.trim().isEmpty()) {
-            if (listener != null) {
-                listener.onError("Comment content is empty");
-            }
+            if (listener != null) listener.onError("Comment content is empty");
             return;
         }
 
+        if (user == null) {
+            if (listener != null) listener.onError("User info is missing");
+            return;
+        }
+
+        // Tạo Map dữ liệu để đẩy lên Firestore
         Map<String, Object> commentData = new HashMap<>();
         commentData.put("articleId", articleId.trim());
-        commentData.put("userId", userId != null ? userId : "");
-        commentData.put("userName", userName != null ? userName : "");
-        commentData.put("userAvatar", userAvatar != null ? userAvatar : "");
+
+        // 🔹 QUAN TRỌNG: Lưu nguyên đối tượng User vào field "user"
+        // Firestore sẽ tự động chuyển đối tượng User thành một Map (JSON object)
+        commentData.put("user", user);
+
         commentData.put("content", content.trim());
         commentData.put("createdAt", System.currentTimeMillis());
 
@@ -107,35 +104,21 @@ public class CommentFirebaseDAO {
                 .collection("comments")
                 .add(commentData)
                 .addOnSuccessListener(docRef -> {
-                    // Fetch the created comment
+                    // Lấy lại comment vừa tạo để trả về cho UI
                     docRef.get().addOnSuccessListener(doc -> {
                         if (doc.exists()) {
                             Comment comment = doc.toObject(Comment.class);
                             if (comment != null) {
                                 comment.setId(doc.getId());
-                                if (listener != null) {
-                                    listener.onLoaded(comment);
-                                }
-                            } else {
-                                if (listener != null) {
-                                    listener.onError("Parse error");
-                                }
-                            }
-                        } else {
-                            if (listener != null) {
-                                listener.onError("Comment not found after creation");
+                                if (listener != null) listener.onLoaded(comment);
                             }
                         }
                     }).addOnFailureListener(e -> {
-                        if (listener != null) {
-                            listener.onError(e.getMessage());
-                        }
+                        if (listener != null) listener.onError(e.getMessage());
                     });
                 })
                 .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onError(e.getMessage());
-                    }
+                    if (listener != null) listener.onError(e.getMessage());
                 });
     }
 
@@ -143,10 +126,7 @@ public class CommentFirebaseDAO {
     // DELETE COMMENT
     // =========================
     public void deleteComment(String articleId, String commentId) {
-        if (articleId == null || articleId.trim().isEmpty() ||
-            commentId == null || commentId.trim().isEmpty()) {
-            return;
-        }
+        if (articleId == null || commentId == null) return;
 
         db.collection("articles")
                 .document(articleId.trim())
@@ -160,9 +140,7 @@ public class CommentFirebaseDAO {
     // =========================
     public void getCommentCount(String articleId, CountListener listener) {
         if (articleId == null || articleId.trim().isEmpty()) {
-            if (listener != null) {
-                listener.onCount(0);
-            }
+            if (listener != null) listener.onCount(0);
             return;
         }
 
@@ -171,14 +149,10 @@ public class CommentFirebaseDAO {
                 .collection("comments")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    if (listener != null) {
-                        listener.onCount(querySnapshot.size());
-                    }
+                    if (listener != null) listener.onCount(querySnapshot.size());
                 })
                 .addOnFailureListener(e -> {
-                    if (listener != null) {
-                        listener.onCount(0);
-                    }
+                    if (listener != null) listener.onCount(0);
                 });
     }
 
@@ -186,4 +160,3 @@ public class CommentFirebaseDAO {
         void onCount(int count);
     }
 }
-
