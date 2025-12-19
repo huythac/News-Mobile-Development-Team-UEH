@@ -1,28 +1,67 @@
 package phivu.ueh.edu.vn.news_app.data.remote;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import phivu.ueh.edu.vn.news_app.model.User;
 
 public class UserFirebaseDAO {
-    private final DatabaseReference ref;
+
+    private final FirebaseFirestore db;
+
+    public interface SingleListener {
+        void onLoaded(User user);
+        void onError(String err);
+    }
+
     public UserFirebaseDAO() {
-        ref = FirebaseDatabase.getInstance().getReference("users");
+        db = FirebaseFirestore.getInstance();
     }
 
+    // =========================
+    // CREATE USER (sau login)
+    // =========================
     public void createUser(User u) {
-        ref.child(u.getId()).setValue(u);
+        if (u == null || u.getId() == null) return;
+
+        db.collection("users")
+                .document(u.getId())
+                .set(u);
     }
 
+    // =========================
+    // UPDATE USER
+    // =========================
     public void updateUser(User u) {
-        ref.child(u.getId()).setValue(u);
+        if (u == null || u.getId() == null) return;
+
+        db.collection("users")
+                .document(u.getId())
+                .set(u);
     }
 
-    public void getUser(String uid, ValueEventListener listener) {
-        ref.child(uid).addListenerForSingleValueEvent(listener);
+    // =========================
+    // GET USER BY UID
+    // =========================
+    public void getUser(String uid, final SingleListener listener) {
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        User u = doc.toObject(User.class);
+                        if (u != null) {
+                            u.setId(doc.getId());
+                            listener.onLoaded(u);
+                        } else {
+                            listener.onError("Parse error");
+                        }
+                    } else {
+                        listener.onError("User not found");
+                    }
+                })
+                .addOnFailureListener(e ->
+                        listener.onError(e.getMessage())
+                );
     }
 }

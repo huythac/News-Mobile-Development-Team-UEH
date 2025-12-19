@@ -16,7 +16,7 @@
         app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled" />
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottomNavigation"
@@ -28,13 +28,16 @@
             android:orientation="vertical"
             android:paddingHorizontal="16dp"
             android:paddingTop="16dp"
-            android:paddingBottom="80dp"> <ImageView
-            android:id="@+id/btnSettings"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_settings"
-            app:tint="#757575"
-            android:layout_gravity="end"/>
+            android:paddingBottom="80dp">
+
+            <ImageView
+                android:id="@+id/btnSettings"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_settings"
+                app:tint="#757575"
+                android:layout_gravity="end"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -65,30 +68,10 @@
                         android:id="@+id/tvProfileName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Pham Thanh Dat"
+                        android:text="Tên người dùng"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#000000"/>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="4dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="120K người theo dõi"
-                            android:textSize="12sp"
-                            android:textColor="#757575"
-                            android:layout_marginEnd="16dp"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="32 đang theo dõi"
-                            android:textSize="12sp"
-                            android:textColor="#757575"/>
-                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -96,7 +79,7 @@
                 android:id="@+id/btnEditProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chỉnh sửa"
+                android:text="Chỉnh sửa trang cá nhân"
                 android:textColor="#000000"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -111,14 +94,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="24dp">
 
                 <LinearLayout
+                    android:id="@+id/tabInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginEnd="24dp">
+                    android:layout_marginEnd="24dp"
+                    android:clickable="true"
+                    android:focusable="true">
                     <TextView
+                        android:id="@+id/tvTabInfoTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Thông tin"
@@ -126,18 +113,36 @@
                         android:textColor="#000000"
                         android:textSize="16sp"/>
                     <View
+                        android:id="@+id/underlineInfo"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
                         android:background="#000000"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/tabArticles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bài viết"
-                    android:textColor="#757575"
-                    android:textSize="16sp"/>
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true">
+                    <TextView
+                        android:id="@+id/tvTabArticlesTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bài viết"
+                        android:textStyle="normal"
+                        android:textColor="#757575"
+                        android:textSize="16sp"/>
+                    <View
+                        android:id="@+id/underlineArticles"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:background="#000000"
+                        android:layout_marginTop="8dp"
+                        android:visibility="invisible"/>
+                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -145,56 +150,80 @@
                 android:layout_height="1dp"
                 android:background="#EEEEEE"/>
 
-            <TextView
-                android:id="@+id/tvUserBio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Đây là phần giới thiệu bản thân..."
-                android:textSize="16sp"
-                android:textColor="#000000"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginTop="24dp"
-                android:visibility="gone"/>
-
             <LinearLayout
-                android:id="@+id/layoutEmptyState"
+                android:id="@+id/layoutInfoContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center"
-                android:layout_marginTop="60dp">
-
-                <ImageView
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:src="@android:drawable/ic_menu_my_calendar"
-                    app:tint="#9E9E9E"/>
+                android:visibility="visible">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvUserBio"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Bạn chưa thêm bất kỳ thông tin nào"
-                    android:textStyle="bold"
+                    android:text="Đây là phần giới thiệu bản thân..."
                     android:textSize="16sp"
                     android:textColor="#000000"
-                    android:layout_marginTop="16dp"/>
+                    android:lineSpacingExtra="4dp"
+                    android:layout_marginTop="24dp"
+                    android:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/tvWriteBio"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layoutEmptyState"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Viết giới thiệu ngắn gọn"
-                    android:textSize="16sp"
-                    android:textColor="#8BC34A"
-                    android:textStyle="bold"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:layout_marginTop="24dp"/>
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginTop="60dp">
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@android:drawable/ic_menu_my_calendar"
+                        app:tint="#9E9E9E"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bạn chưa thêm bất kỳ thông tin nào"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:textColor="#000000"
+                        android:layout_marginTop="16dp"/>
+
+                    <TextView
+                        android:id="@+id/tvWriteBio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Viết giới thiệu ngắn gọn"
+                        android:textSize="16sp"
+                        android:textColor="#8BC34A"
+                        android:textStyle="bold"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:layout_marginTop="24dp"/>
+                </LinearLayout>
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvMyArticles"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                android:nestedScrollingEnabled="false"/>
+
+            <ProgressBar
+                android:id="@+id/progressArticles"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
-    </ScrollView>
-    <!-- FAB ĐẶT Ở ĐÂY -->
+    </androidx.core.widget.NestedScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabEditBio"
         android:layout_width="wrap_content"

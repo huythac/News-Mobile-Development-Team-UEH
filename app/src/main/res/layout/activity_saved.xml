@@ -41,11 +41,16 @@
             android:paddingHorizontal="16dp">
 
             <LinearLayout
+                android:id="@+id/tabSaved"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginEnd="24dp">
+                android:layout_marginEnd="24dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
                 <TextView
+                    android:id="@+id/tvTabSaved"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lưu"
@@ -53,6 +58,7 @@
                     android:textStyle="bold"
                     android:textColor="#000000"/>
                 <View
+                    android:id="@+id/viewTabSavedIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="#000000"
@@ -60,16 +66,22 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/tabHistory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
                 <TextView
+                    android:id="@+id/tvTabHistory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Lịch sử đọc"
                     android:textSize="16sp"
                     android:textColor="#757575"/>
                 <View
+                    android:id="@+id/viewTabHistoryIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="#000000"
@@ -96,8 +108,9 @@
                 android:paddingTop="8dp"
                 tools:listitem="@layout/item_article"/>
 
+            <!-- Empty State for Saved Tab -->
             <LinearLayout
-                android:id="@+id/layoutEmptyState"
+                android:id="@+id/layoutEmptyStateSaved"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -106,11 +119,13 @@
                 android:visibility="visible">
 
                 <ImageView
+                    android:id="@+id/imgEmptySavedIcon"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
                     android:src="@drawable/ic_bookmark_outline"
                     app:tint="#9E9E9E"/>
                 <TextView
+                    android:id="@+id/tvEmptySavedTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Chưa có bài viết nào được lưu"
@@ -121,6 +136,7 @@
                     android:layout_marginTop="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvEmptySavedSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Nhấn lưu bất kỳ bài viết nào bạn yêu thích hoặc để đọc khi không có internet"
@@ -139,7 +155,63 @@
                     android:textStyle="bold"
                     android:textColor="#8BC34A"
                     android:padding="12dp"
+                    android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </LinearLayout>
+
+            <!-- Empty State for History Tab -->
+            <LinearLayout
+                android:id="@+id/layoutEmptyStateHistory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="32dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/imgEmptyHistoryIcon"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:src="@drawable/ic_bookmark_outline"
+                    app:tint="#9E9E9E"/>
+                <TextView
+                    android:id="@+id/tvEmptyHistoryTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bạn chưa đọc bài viết nào"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:gravity="center"
                     android:layout_marginTop="16dp"/>
+
+                <TextView
+                    android:id="@+id/tvEmptyHistorySubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Các bài viết được bạn đọc sẽ được lưu ở đây"
+                    android:textSize="14sp"
+                    android:textColor="#757575"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="4dp"/>
+
+                <TextView
+                    android:id="@+id/btnStartExploreHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bắt đầu khám phá"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#8BC34A"
+                    android:padding="12dp"
+                    android:layout_marginTop="16dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
             </LinearLayout>
 
         </FrameLayout>

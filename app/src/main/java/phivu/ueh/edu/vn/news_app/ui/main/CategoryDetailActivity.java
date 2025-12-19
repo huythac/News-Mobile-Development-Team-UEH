@@ -4,13 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +30,7 @@ public class CategoryDetailActivity extends AppCompatActivity {
 
     private String categoryId;
     private String categoryName;
+    private String userId;
 
     private ArticleRepository articleRepo;
     private FollowCategoryRepository followRepo;
@@ -31,17 +38,24 @@ public class CategoryDetailActivity extends AppCompatActivity {
     private RecyclerView rvArticles;
     private ArticleAdapter articleAdapter;
 
+    private TextView tvCategoryName, tvCategoryStats;
     private MaterialButton btnFollow;
+    private ImageView btnBack;
 
     private HashMap<String, Boolean> followMap = new HashMap<>();
-    private final String userId = "123";  // TODO: FirebaseAuth.getUid()
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category_detail);   // FIX
+        setContentView(R.layout.activity_category_detail);
 
-        // Nhận dữ liệu từ Adapter
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            finish();
+            return;
+        }
+        userId = user.getUid();
+
         categoryId = getIntent().getStringExtra("categoryId");
         categoryName = getIntent().getStringExtra("categoryName");
 
@@ -51,61 +65,91 @@ public class CategoryDetailActivity extends AppCompatActivity {
             return;
         }
 
-        // Repo
         articleRepo = new ArticleRepository(this);
         followRepo = new FollowCategoryRepository(this);
 
-        // Ánh xạ view
-        ImageView btnBack = findViewById(R.id.btnBack);
-        TextView tvCategoryName = findViewById(R.id.tvCategoryName);
-        TextView tvStats = findViewById(R.id.tvCategoryStats);
+        initViews();
+
+        setupHeaderData();
+        loadCategoryArticles();
+        loadFollowState();
+    }
+
+    private void initViews() {
+        btnBack = findViewById(R.id.btnBack);
+        tvCategoryName = findViewById(R.id.tvCategoryName);
+        tvCategoryStats = findViewById(R.id.tvCategoryStats);
         btnFollow = findViewById(R.id.btnFollowCategory);
 
         rvArticles = findViewById(R.id.rvCategoryArticles);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
 
-        // Set UI
-        tvCategoryName.setText(categoryName);
-        tvStats.setText("120 bài viết • 14k người theo dõi");
-
         btnBack.setOnClickListener(v -> finish());
-
-        loadFollowState();
-        loadCategoryArticles();
-
         btnFollow.setOnClickListener(v -> toggleFollow());
     }
 
+    private void setupHeaderData() {
+        if (categoryName != null) {
+            tvCategoryName.setText(categoryName);
+        } else {
+            tvCategoryName.setText("Chủ đề");
+        }
+
+        tvCategoryStats.setText("Đang tải dữ liệu...");
+
+        FirebaseFirestore.getInstance()
+                .collection("articles")
+                .whereEqualTo("categoryId", categoryId)
+                .get()
+                .addOnSuccessListener(query -> {
+                    int count = query.size();
+                    // Giả lập số người theo dõi (vì DB chưa có trường này)
+                    String stats = count + " bài viết • 1.2k người theo dõi";
+                    tvCategoryStats.setText(stats);
+                })
+                .addOnFailureListener(e ->
+                        tvCategoryStats.setText("0 bài viết")
+                );
+    }
+
+    // =========================
+    // XỬ LÝ FOLLOW (LOGIC NÚT THEO DÕI)
+    // =========================
     private void loadFollowState() {
         followRepo.getFollowed(userId, new FollowCategoryRepository.Listener() {
             @Override
             public void onResult(HashMap<String, Boolean> map) {
                 followMap = map;
-                updateFollowButton();
+                updateFollowButtonUI();
             }
 
             @Override
             public void onError(String err) {
-                Toast.makeText(CategoryDetailActivity.this, err, Toast.LENGTH_SHORT).show();
+                Log.e("FOLLOW", "Lỗi load follow: " + err);
             }
         });
     }
-    private void updateFollowButton() {
-        boolean isFollowed = followMap.containsKey(categoryId);
+
+    private void updateFollowButtonUI() {
+        boolean isFollowed = followMap != null && followMap.containsKey(categoryId);
 
         if (isFollowed) {
             btnFollow.setText("Đang theo dõi");
             btnFollow.setTextColor(Color.WHITE);
-            btnFollow.setBackgroundTintList(getColorStateList(R.color.black));
+            btnFollow.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
+            btnFollow.setStrokeColor(ColorStateList.valueOf(Color.BLACK));
+            btnFollow.setStrokeWidth(0);
         } else {
             btnFollow.setText("Theo dõi");
             btnFollow.setTextColor(Color.BLACK);
-            btnFollow.setBackgroundTintList(getColorStateList(R.color.white));
+            btnFollow.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
+            btnFollow.setStrokeColor(ColorStateList.valueOf(Color.BLACK));
+            btnFollow.setStrokeWidth(2);
         }
     }
 
     private void toggleFollow() {
-        boolean isFollowed = followMap.containsKey(categoryId);
+        boolean isFollowed = followMap != null && followMap.containsKey(categoryId);
 
         if (isFollowed) {
             followRepo.unfollow(userId, categoryId);
@@ -114,10 +158,12 @@ public class CategoryDetailActivity extends AppCompatActivity {
             followRepo.follow(userId, categoryId);
             followMap.put(categoryId, true);
         }
-
-        updateFollowButton();
+        updateFollowButtonUI();
     }
 
+    // =========================
+    // LOAD DANH SÁCH BÀI VIẾT
+    // =========================
     private void loadCategoryArticles() {
         articleRepo.getArticlesByCategory(categoryId, new ArticleRepository.ListCallback() {
             @Override
@@ -128,7 +174,7 @@ public class CategoryDetailActivity extends AppCompatActivity {
 
             @Override
             public void onError(String err) {
-                Toast.makeText(CategoryDetailActivity.this, "Không tải được bài viết: " + err, Toast.LENGTH_SHORT).show();
+                Toast.makeText(CategoryDetailActivity.this, "Không tải được bài viết", Toast.LENGTH_SHORT).show();
             }
         });
     }

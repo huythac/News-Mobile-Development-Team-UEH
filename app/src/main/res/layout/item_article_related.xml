@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/article_background"
+    android:paddingHorizontal="@dimen/article_detail_padding_horizontal"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:clickable="true"
+    android:focusable="true">
+
+    <!-- Header Image -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent">
+
+        <ImageView
+            android:id="@+id/imgRelatedHeader"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="@drawable/bg_avatar_circle"
+            tools:src="@mipmap/ic_launcher_round" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Author Name Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tvRelatedAuthorName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Article.Meta"
+            android:textColor="@color/article_text_secondary"
+            android:textSize="14sp"
+            android:fontFamily="@font/mona_sans"
+            tools:text="Tên tác giả" />
+
+    </LinearLayout>
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tvRelatedTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Article.Title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/article_text_primary"
+        android:maxLines="3"
+        android:ellipsize="end"
+        android:fontFamily="@font/mona_sans"
+        android:lineSpacingExtra="2dp"
+        android:layout_marginBottom="4dp"
+        tools:text="Tiêu đề của bài báo dài tối đa 3 dòng, nếu dài hơn thì 3 chấm" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/tvRelatedDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.Article.Description"
+        android:textColor="@color/article_text_secondary"
+        android:textSize="14sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:fontFamily="@font/mona_sans"
+        android:lineSpacingExtra="2dp"
+        android:layout_marginBottom="12dp"
+        tools:text="Nội dung mô tả, tối đa 2 dòng còn dài hơn thì 3 chấm" />
+
+    <!-- Meta Row: Date + Comment Count + Bookmark -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="0dp">
+
+        <!-- Left: Date + Comment Count -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true">
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/tvRelatedDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Meta"
+                android:textColor="@color/article_text_secondary"
+                android:textSize="12sp"
+                android:fontFamily="@font/mona_sans"
+                tools:text="Thứ 6, 28 tháng 11, 2025" />
+
+            <!-- Comment Count (with icon) -->
+            <LinearLayout
+                android:id="@+id/layoutCommentCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:visibility="visible"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/tvRelatedCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.Article.Meta"
+                    android:textColor="@color/article_text_secondary"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/mona_sans"
+                    tools:text="0" />
+
+                <ImageView
+                    android:id="@+id/imgRelatedCommentIcon"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/chat_circle"
+                    app:tint="@color/article_text_secondary"
+                    android:contentDescription="Bình luận" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Right: Bookmark Icon -->
+        <ImageView
+            android:id="@+id/imgRelatedBookmark"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/bookmark_simple"
+            app:tint="@color/article_text_secondary"
+            android:contentDescription="Lưu"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:visibility="visible"
+            tools:visibility="visible" />
+
+    </RelativeLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/article_detail_divider_height"
+        android:layout_marginTop="16dp"
+        android:background="@color/article_divider" />
+
+</LinearLayout>

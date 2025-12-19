@@ -1,7 +1,7 @@
 package phivu.ueh.edu.vn.news_app.ui.main;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -16,9 +16,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.data.remote.UserFirebaseDAO;
@@ -26,10 +23,12 @@ import phivu.ueh.edu.vn.news_app.model.User;
 
 public class MainActivity extends AppCompatActivity {
 
-    private GoogleSignInClient googleClient;
     private static final int RC_SIGN_IN = 100;
+
+    private GoogleSignInClient googleClient;
     private FirebaseAuth mAuth;
     private UserFirebaseDAO userDAO;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,15 +39,15 @@ public class MainActivity extends AppCompatActivity {
         userDAO = new UserFirebaseDAO();
 
         if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(MainActivity.this, HomeActivity.class));
-            finish();
+            checkAndSaveUser(mAuth.getCurrentUser());
             return;
         }
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
 
         googleClient = GoogleSignIn.getClient(this, gso);
 
@@ -56,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn() {
-        Intent intent = googleClient.getSignInIntent();
-        startActivityForResult(intent, RC_SIGN_IN);
+        startActivityForResult(googleClient.getSignInIntent(), RC_SIGN_IN);
     }
 
     @Override
@@ -65,68 +63,78 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            Task<GoogleSignInAccount> task =
+                    GoogleSignIn.getSignedInAccountFromIntent(data);
+
             try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
+                GoogleSignInAccount account =
+                        task.getResult(ApiException.class);
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (ApiException e) {
-                Toast.makeText(this, "Google Sign-In thất bại", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "Google Sign-In thất bại",
+                        Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        AuthCredential credential =
+                GoogleAuthProvider.getCredential(idToken, null);
 
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-
                         if (firebaseUser != null) {
-                            checkAndSaveUser(firebaseUser); // Gọi hàm kiểm tra riêng
+                            checkAndSaveUser(firebaseUser);
                         }
                     } else {
-                        Toast.makeText(MainActivity.this, "Lỗi xác thực Firebase", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Lỗi xác thực Firebase",
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    // HÀM KIỂM TRA & LƯU USER VÀO DATABASE
+    /**
+     * LOGIN + MIGRATE (ADMIN ONLY)
+     */
     private void checkAndSaveUser(FirebaseUser firebaseUser) {
         String uid = firebaseUser.getUid();
 
-        // Kiểm tra xem User này đã có trong Database chưa
-        userDAO.getUser(uid, new ValueEventListener() {
+        userDAO.getUser(uid, new UserFirebaseDAO.SingleListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    // TRƯỜNG HỢP 1: User CHƯA CÓ -> Tạo mới
-                    String email = firebaseUser.getEmail();
-                    String name = firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "No Name";
-
-                    User newUser = new User(uid, name, email, "user");
-                    userDAO.createUser(newUser);
-
-                    Toast.makeText(MainActivity.this, "Chào bạn mới!", Toast.LENGTH_SHORT).show();
-                } else {
-                    // TRƯỜNG HỢP 2: User ĐÃ CÓ
-                    Toast.makeText(MainActivity.this, "Xin chào người anh em!", Toast.LENGTH_SHORT).show();
-                }
-
+            public void onLoaded(User user) {
                 goToHome();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            public void onError(String err) {
+                // Lấy ảnh từ Google
+                String photoUrl = "";
+                if (firebaseUser.getPhotoUrl() != null) {
+                    photoUrl = firebaseUser.getPhotoUrl().toString();
+                }
+
+                // 🔹 FIX: Truyền thêm photoUrl vào constructor
+                User newUser = new User(
+                        uid,
+                        firebaseUser.getDisplayName() != null ? firebaseUser.getDisplayName() : "No Name",
+                        firebaseUser.getEmail(),
+                        "USER",
+                        photoUrl
+                );
+
+                userDAO.createUser(newUser);
                 goToHome();
             }
         });
     }
 
+
     private void goToHome() {
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
     }
 }

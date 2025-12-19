@@ -14,21 +14,22 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.HashMap;
 import java.util.List;
 
-
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.auth.SessionManager;
-import phivu.ueh.edu.vn.news_app.ui.profile.ProfileActivity;
-import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
-import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.CategoryRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.FollowCategoryRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
 import phivu.ueh.edu.vn.news_app.model.Category;
+import phivu.ueh.edu.vn.news_app.ui.profile.ProfileActivity;
+import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
+import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -42,33 +43,46 @@ public class HomeActivity extends AppCompatActivity {
     private FollowCategoryRepository followRepo;
 
     private HashMap<String, Boolean> followMap = new HashMap<>();
-    private final String userId = "123"; // TODO: FirebaseAuth.getUid()
+    private String userId;
 
-    TextView tvForYou, tvTopic;
-    View underlineForYou, underlineTopic;
+    private TextView tvForYou, tvTopic;
+    private View underlineForYou, underlineTopic;
 
-
+    // ======================================================
+    // LIFECYCLE
+    // ======================================================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // ===== FAB ADMIN =====
-        FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
-
-        if (SessionManager.isAdmin()) {
-            fabEditBio.setVisibility(View.VISIBLE);
-        } else {
-            fabEditBio.setVisibility(View.GONE);
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            finish();
+            return;
         }
-        // TAB UI
+        userId = currentUser.getUid();
+
+        initViews();
+        initRepos();
+        setupBottomNavigation();
+
+        loadArticles();
+        setTabSelected(true);
+    }
+
+    // ======================================================
+    // INIT
+    // ======================================================
+    private void initViews() {
+        FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
+        fabEditBio.setVisibility(SessionManager.isAdmin() ? View.VISIBLE : View.GONE);
+
         tvForYou = findViewById(R.id.tvForYou);
         tvTopic = findViewById(R.id.tvTopic);
-
         underlineForYou = findViewById(R.id.viewUnderlineForYou);
         underlineTopic = findViewById(R.id.viewUnderlineTopic);
 
-        // LIST
         rvArticles = findViewById(R.id.recyclerViewArticles);
         rvArticles.setLayoutManager(new LinearLayoutManager(this));
 
@@ -76,18 +90,6 @@ public class HomeActivity extends AppCompatActivity {
         rvTopics.setLayoutManager(new LinearLayoutManager(this));
         rvTopics.setVisibility(View.GONE);
 
-        // REPO
-        articleRepo = new ArticleRepository(this);
-        categoryRepo = new CategoryRepository(this);
-        followRepo = new FollowCategoryRepository(this);
-
-        setupBottomNavigation();
-
-        // LOAD DỮ LIỆU BAN ĐẦU
-        loadArticles();
-        loadFollowState();
-
-        // TAB EVENTS
         tvForYou.setOnClickListener(v -> {
             setTabSelected(true);
             showArticles();
@@ -96,58 +98,18 @@ public class HomeActivity extends AppCompatActivity {
         tvTopic.setOnClickListener(v -> {
             setTabSelected(false);
             showTopics();
-            loadCategories(); // load topic + followMap
-        });
-
-        setTabSelected(true);
-    }
-
-    // ======================================================
-    // LOAD FOLLOW STATE BAN ĐẦU
-    // ======================================================
-    private void loadFollowState() {
-        followRepo.getFollowed(userId, new FollowCategoryRepository.Listener() {
-            @Override
-            public void onResult(HashMap<String, Boolean> map) {
-                followMap = map;
-            }
-
-            @Override
-            public void onError(String err) { }
+            loadFollowThenCategories();
         });
     }
 
-    // ======================================================
-    // LOAD LẠI FOLLOW MAP KHI QUAY LẠI TỪ CATEGORY DETAIL
-    // ======================================================
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        // Chỉ reload follow state khi đang ở tab Chủ đề
-        if (tvTopic.getTypeface() != null && tvTopic.getTypeface().isBold()) {
-            reloadFollowState();
-        }
-    }
-
-    private void reloadFollowState() {
-        followRepo.getFollowed(userId, new FollowCategoryRepository.Listener() {
-            @Override
-            public void onResult(HashMap<String, Boolean> map) {
-                followMap = map;
-
-                if (categoryAdapter != null) {
-                    categoryAdapter.updateFollowMap(map);
-                }
-            }
-
-            @Override
-            public void onError(String err) { }
-        });
+    private void initRepos() {
+        articleRepo = new ArticleRepository(this);
+        categoryRepo = new CategoryRepository(this);
+        followRepo = new FollowCategoryRepository(this);
     }
 
     // ======================================================
-    // LOAD BÀI VIẾT
+    // DATA LOAD
     // ======================================================
     private void loadArticles() {
         articleRepo.getList(new ArticleRepository.ListCallback() {
@@ -159,25 +121,61 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onError(String err) {
-                Toast.makeText(HomeActivity.this, "Không tải được dữ liệu: " + err, Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this,
+                        "Không tải được bài viết", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    // ======================================================
-    // LOAD CATEGORY + FOLLOW MAP
-    // ======================================================
-    private void loadCategories() {
-        categoryRepo.getCategories(new CategoryRepository.Callback() {
+    /**
+     * 🔥 LOAD FOLLOW → RỒI MỚI LOAD CATEGORY
+     */
+    private void loadFollowThenCategories() {
+        followRepo.getFollowed(userId, new FollowCategoryRepository.Listener() {
             @Override
-            public void onSuccess(List<Category> list) {
-                categoryAdapter = new CategoryAdapter(HomeActivity.this, list, followMap);
-                rvTopics.setAdapter(categoryAdapter);
+            public void onResult(HashMap<String, Boolean> map) {
+                followMap = map;
+                loadCategories();
             }
 
             @Override
             public void onError(String err) {
-                Toast.makeText(HomeActivity.this, "Không tải được chủ đề: " + err, Toast.LENGTH_SHORT).show();
+                followMap.clear();
+                loadCategories();
+            }
+        });
+    }
+
+    private void loadCategories() {
+        categoryRepo.getCategories(new CategoryRepository.Callback() {
+            @Override
+            public void onSuccess(List<Category> list) {
+                // Kiểm tra nếu adapter chưa khởi tạo thì tạo mới
+                if (categoryAdapter == null) {
+                    categoryAdapter = new CategoryAdapter(
+                            HomeActivity.this,
+                            list,
+                            followMap, // Map đã lấy từ loadFollowThenCategories
+                            userId
+                    );
+                    rvTopics.setAdapter(categoryAdapter);
+                } else {
+                    // Nếu adapter đã có, chỉ cập nhật dữ liệu để tránh nháy màn hình
+                    // Bạn cần thêm hàm setList trong Adapter nếu chưa có,
+                    // hoặc tạm thời gán list trực tiếp nếu biến là public (không khuyến khích)
+                    // Nhưng quan trọng nhất là cập nhật MAP:
+                    categoryAdapter.updateFollowMap(followMap);
+
+                    // Nếu danh sách category thay đổi, bạn nên update cả list category
+                    // categoryAdapter.updateList(list); // Cần viết thêm hàm này trong Adapter
+                    // categoryAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError(String err) {
+                Toast.makeText(HomeActivity.this,
+                        "Không tải được chủ đề", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -223,27 +221,21 @@ public class HomeActivity extends AppCompatActivity {
         bottomNav.setSelectedItemId(R.id.nav_home);
 
         bottomNav.setOnItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home) return true;
-
             Intent intent = null;
 
-            if (id == R.id.nav_search) {
+            if (item.getItemId() == R.id.nav_search) {
                 intent = new Intent(this, SearchActivity.class);
-            } else if (id == R.id.nav_saved) {
+            } else if (item.getItemId() == R.id.nav_saved) {
                 intent = new Intent(this, SavedActivity.class);
-            } else if (id == R.id.nav_account) {
+            } else if (item.getItemId() == R.id.nav_account) {
                 intent = new Intent(this, ProfileActivity.class);
-            }
-
-            if (intent != null) {
-                startActivity(intent);
-                overridePendingTransition(0, 0);
+            } else {
                 return true;
             }
 
-            return false;
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+            return true;
         });
     }
 }

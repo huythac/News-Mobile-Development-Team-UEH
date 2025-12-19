@@ -1,10 +1,8 @@
 package phivu.ueh.edu.vn.news_app.data.remote;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,80 +10,226 @@ import java.util.List;
 import phivu.ueh.edu.vn.news_app.model.Article;
 
 public class ArticleFirebaseDAO {
-    private final DatabaseReference ref;
+
+    private final FirebaseFirestore db;
 
     public ArticleFirebaseDAO() {
-        ref = FirebaseDatabase.getInstance().getReference("articles");
+        db = FirebaseFirestore.getInstance();
     }
 
-    public interface ListListener { void onLoaded(List<Article> list); void onError(String err); }
-    public interface SingleListener { void onLoaded(Article a); void onError(String err); }
+    public interface ListListener {
+        void onLoaded(List<Article> list);
+        void onError(String err);
+    }
 
+    public interface SingleListener {
+        void onLoaded(Article a);
+        void onError(String err);
+    }
+
+    // =========================
+    // INSERT
+    // =========================
     public void insert(Article a) {
-        String id = ref.push().getKey();
-        a.setId(id);
-        ref.child(id).setValue(a);
+        db.collection("articles")
+                .add(a)
+                .addOnSuccessListener(docRef -> {
+                    a.setId(docRef.getId());
+                });
     }
 
+    // =========================
+    // FETCH ALL (new → old)
+    // =========================
     public void fetchAll(final ListListener listener) {
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override public void onDataChange(DataSnapshot snapshot) {
-                List<Article> out = new ArrayList<>();
-                for (DataSnapshot s : snapshot.getChildren()) {
-                    Article a = s.getValue(Article.class);
-                    if (a != null) {
-                        a.setId(s.getKey());
-                        out.add(a);
-                    }
-                }
-                listener.onLoaded(out);
-            }
-            @Override public void onCancelled(DatabaseError error) { listener.onError(error.getMessage()); }
-        });
-    }
-
-    public void fetchById(String id, final SingleListener listener) {
-        ref.child(id).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override public void onDataChange(DataSnapshot snapshot) {
-                Article a = snapshot.getValue(Article.class);
-                if (a != null) {
-                    a.setId(snapshot.getKey());
-                    listener.onLoaded(a);
-                } else listener.onError("Not found");
-            }
-            @Override public void onCancelled(DatabaseError error) { listener.onError(error.getMessage()); }
-        });
-    }
-
-    public void fetchByCategory(String categoryId, ListListener listener) {
-
-        DatabaseReference ref = FirebaseDatabase.getInstance()
-                .getReference("articles");
-
-        ref.orderByChild("categoryId").equalTo(categoryId)
+        db.collection("articles")
+                .orderBy("publishDate", Query.Direction.DESCENDING)
                 .get()
-                .addOnSuccessListener(snapshot -> {
+                .addOnSuccessListener(query -> {
                     List<Article> list = new ArrayList<>();
 
-                    for (DataSnapshot ds : snapshot.getChildren()) {
-                        Article a = ds.getValue(Article.class);
+                    for (DocumentSnapshot doc : query.getDocuments()) {
+                        Article a = doc.toObject(Article.class);
                         if (a != null) {
-                            a.setId(ds.getKey());
+                            a.setId(doc.getId());
                             list.add(a);
                         }
                     }
 
                     listener.onLoaded(list);
                 })
-                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+                .addOnFailureListener(e ->
+                        listener.onError(e.getMessage())
+                );
     }
 
+    // =========================
+    // FETCH BY ID
+    // =========================
+    public void fetchById(String id, final SingleListener listener) {
+        db.collection("articles")
+                .document(id)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        Article a = doc.toObject(Article.class);
+                        if (a != null) {
+                            a.setId(doc.getId());
+                            listener.onLoaded(a);
+                        } else {
+                            listener.onError("Parse error");
+                        }
+                    } else {
+                        listener.onError("Not found");
+                    }
+                })
+                .addOnFailureListener(e ->
+                        listener.onError(e.getMessage())
+                );
+    }
 
+    // =========================
+    // FETCH BY CATEGORY
+    // =========================
+    public void fetchByCategory(String categoryId, final ListListener listener) {
+        db.collection("articles")
+                .whereEqualTo("categoryId", categoryId)
+                .orderBy("publishDate", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(query -> {
+                    List<Article> list = new ArrayList<>();
 
+                    for (DocumentSnapshot doc : query.getDocuments()) {
+                        Article a = doc.toObject(Article.class);
+                        if (a != null) {
+                            a.setId(doc.getId());
+                            list.add(a);
+                        }
+                    }
+
+                    listener.onLoaded(list);
+                })
+                .addOnFailureListener(e ->
+                        listener.onError(e.getMessage())
+                );
+    }
+
+    // =========================
+    // FETCH BY AUTHOR
+    // =========================
+    /**
+     * Fetch articles by authorId, excluding current article, limited to maxCount
+     * @param authorId Author ID to filter by
+     * @param excludeId Article ID to exclude (current article)
+     * @param maxCount Maximum number of articles to return (default: 10)
+     * @param listener Callback for results
+     */
+    public void fetchByAuthor(String authorId, String excludeId, int maxCount, final ListListener listener) {
+        if (authorId == null || authorId.trim().isEmpty()) {
+            if (listener != null) {
+                listener.onError("Author ID is null or empty");
+            }
+            return;
+        }
+
+        // Try query with orderBy first (requires composite index)
+        Query query = db.collection("articles")
+                .whereEqualTo("authorId", authorId.trim())
+                .orderBy("publishDate", Query.Direction.DESCENDING)
+                .limit(maxCount > 0 ? maxCount + 1 : 11); // Get one extra to account for excluded article
+
+        query.get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Article> list = new ArrayList<>();
+
+                    for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                        // Exclude current article
+                        String docId = doc.getId();
+                        if (excludeId != null && excludeId.equals(docId)) {
+                            continue;
+                        }
+
+                        Article a = doc.toObject(Article.class);
+                        if (a != null) {
+                            a.setId(docId);
+                            list.add(a);
+                        }
+                        
+                        // Limit results after excluding current article
+                        if (list.size() >= (maxCount > 0 ? maxCount : 10)) {
+                            break;
+                        }
+                    }
+
+                    if (listener != null) {
+                        listener.onLoaded(list);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Fallback: Query without orderBy if index is missing
+                    // Then sort in code
+                    db.collection("articles")
+                            .whereEqualTo("authorId", authorId.trim())
+                            .limit(50) // Get more to ensure we have enough after filtering
+                            .get()
+                            .addOnSuccessListener(querySnapshot -> {
+                                List<Article> list = new ArrayList<>();
+
+                                for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
+                                    // Exclude current article
+                                    String docId = doc.getId();
+                                    if (excludeId != null && excludeId.equals(docId)) {
+                                        continue;
+                                    }
+
+                                    Article a = doc.toObject(Article.class);
+                                    if (a != null) {
+                                        a.setId(docId);
+                                        list.add(a);
+                                    }
+                                }
+
+                                // Sort by publishDate descending in code
+                                list.sort((a1, a2) -> {
+                                    long date1 = a1.getPublishDate();
+                                    long date2 = a2.getPublishDate();
+                                    return Long.compare(date2, date1); // Descending
+                                });
+
+                                // Limit to maxCount
+                                if (list.size() > (maxCount > 0 ? maxCount : 10)) {
+                                    list = list.subList(0, maxCount > 0 ? maxCount : 10);
+                                }
+
+                                if (listener != null) {
+                                    listener.onLoaded(list);
+                                }
+                            })
+                            .addOnFailureListener(e2 -> {
+                                if (listener != null) {
+                                    listener.onError(e2 != null ? e2.getMessage() : "Failed to fetch articles");
+                                }
+                            });
+                });
+    }
+
+    // =========================
+    // UPDATE
+    // =========================
     public void update(Article article) {
         if (article.getId() == null) return;
-        ref.child(article.getId()).setValue(article);
+
+        db.collection("articles")
+                .document(article.getId())
+                .set(article);
     }
 
-    public void delete(String id) { ref.child(id).removeValue(); }
+    // =========================
+    // DELETE
+    // =========================
+    public void delete(String id) {
+        db.collection("articles")
+                .document(id)
+                .delete();
+    }
 }

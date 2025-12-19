@@ -9,8 +9,8 @@ import phivu.ueh.edu.vn.news_app.data.remote.FollowCategoryFirebaseDAO;
 
 public class FollowCategoryRepository {
 
-    private FollowCategoryDAO local;
-    private FollowCategoryFirebaseDAO remote;
+    private final FollowCategoryDAO local;
+    private final FollowCategoryFirebaseDAO remote;
 
     public FollowCategoryRepository(Context ctx) {
         local = new FollowCategoryDAO(ctx);
@@ -22,33 +22,59 @@ public class FollowCategoryRepository {
         void onError(String err);
     }
 
-    // FOLLOW
+    // =========================
+    // FOLLOW (NO CALLBACK) - dùng cho Adapter
+    // =========================
     public void follow(String userId, String categoryId) {
         remote.follow(userId, categoryId);
         local.follow(userId, categoryId);
     }
 
-    // UNFOLLOW
+    // =========================
+    // UNFOLLOW (NO CALLBACK) - dùng cho Adapter
+    // =========================
     public void unfollow(String userId, String categoryId) {
         remote.unfollow(userId, categoryId);
         local.unfollow(userId, categoryId);
     }
 
-    // GET FOLLOW LIST (PRIMARY = FIREBASE, FALLBACK = LOCAL)
+    // =========================
+    // FOLLOW (WITH CALLBACK) - dùng cho Detail
+    // =========================
+    public void follow(String userId, String categoryId, Runnable onDone) {
+        remote.follow(userId, categoryId);
+        local.follow(userId, categoryId);
+    }
+
+    // =========================
+    // UNFOLLOW (WITH CALLBACK) - dùng cho Detail
+    // =========================
+    public void unfollow(String userId, String categoryId, Runnable onDone) {
+        remote.unfollow(userId, categoryId);
+        local.unfollow(userId, categoryId);
+    }
+
+    // =========================
+    // GET FOLLOW LIST
+    // =========================
     public void getFollowed(String userId, Listener cb) {
         remote.getFollowed(userId, new FollowCategoryFirebaseDAO.ValueListener() {
             @Override
             public void onLoaded(HashMap<String, Boolean> remoteMap) {
-                // Lưu xuống local
+
+                // clear local trước
+                local.clearByUser(userId);
+
+                // sync lại từ Firebase
                 for (String id : remoteMap.keySet()) {
                     local.follow(userId, id);
                 }
+
                 cb.onResult(remoteMap);
             }
 
             @Override
             public void onError(String err) {
-                // lỗi Firebase → dùng local
                 cb.onResult(local.getFollowed(userId));
             }
         });

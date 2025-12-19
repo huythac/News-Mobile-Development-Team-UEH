@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/article_background">
+
+    <!-- Handle (Top) -->
+    <View
+        android:layout_width="@dimen/comments_sheet_handle_width"
+        android:layout_height="@dimen/comments_sheet_handle_height"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/comments_sheet_handle_margin_top"
+        android:layout_marginBottom="@dimen/comments_sheet_handle_margin_bottom"
+        android:background="@color/article_divider"
+        android:backgroundTint="@color/article_divider" />
+
+    <!-- Header: X button + Title -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/comments_sheet_header_height"
+        android:paddingHorizontal="@dimen/comments_sheet_header_padding"
+        android:gravity="center_vertical">
+
+        <!-- Close Button (X) -->
+        <ImageView
+            android:id="@+id/btnCloseComments"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            app:tint="@color/article_text_primary"
+            android:contentDescription="Đóng" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/tvCommentsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textAppearance="@style/TextAppearance.Article.Title"
+            android:textSize="18sp"
+            android:text="@string/comments_title"
+            tools:text="Bình luận (120)" />
+
+    </RelativeLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/article_detail_divider_height"
+        android:background="@color/article_divider" />
+
+    <!-- Content Area: RecyclerView or Empty State -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Comments List -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvComments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/comments_sheet_input_height"
+            tools:listitem="@layout/item_comment"
+            tools:itemCount="3" />
+
+        <!-- Empty State -->
+        <LinearLayout
+            android:id="@+id/layoutCommentsEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/spacing_xl"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="@dimen/comments_empty_icon_size"
+                android:layout_height="@dimen/comments_empty_icon_size"
+                android:src="@drawable/ic_comment"
+                app:tint="@color/article_text_secondary"
+                android:layout_marginTop="@dimen/comments_empty_margin_top" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Title"
+                android:textSize="18sp"
+                android:text="@string/comments_empty_title"
+                android:layout_marginTop="@dimen/comments_empty_text_margin_top"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Meta"
+                android:text="@string/comments_empty_subtitle"
+                android:layout_marginTop="@dimen/spacing_small"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/spacing_xl" />
+
+        </LinearLayout>
+
+        <!-- Error State -->
+        <LinearLayout
+            android:id="@+id/layoutCommentsError"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="@dimen/spacing_xl"
+            android:visibility="gone"
+            tools:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvCommentsError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.Article.Meta"
+                android:text="@string/comments_error_loading"
+                android:layout_marginBottom="@dimen/spacing_medium"
+                android:gravity="center" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCommentsRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/comments_retry"
+                android:textAllCaps="false"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+        </LinearLayout>
+
+        <!-- Loading State -->
+        <ProgressBar
+            android:id="@+id/progressComments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- Input Bar (Fixed at bottom) -->
+    <LinearLayout
+        android:id="@+id/layoutCommentInput"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/comments_sheet_input_height"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/comments_sheet_input_padding"
+        android:paddingVertical="@dimen/spacing_small"
+        android:background="@color/article_background"
+        android:elevation="4dp">
+
+        <!-- User Avatar (Circular) -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="@dimen/comments_sheet_avatar_size"
+            android:layout_height="@dimen/comments_sheet_avatar_size"
+            android:layout_marginEnd="@dimen/spacing_medium"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <ImageView
+                android:id="@+id/imgInputAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_avatar_circle"
+                app:srcCompat="@mipmap/ic_launcher_round"
+                tools:src="@mipmap/ic_launcher_round" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Input Field Container -->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edtCommentInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="40dp"
+                android:maxLines="4"
+                android:inputType="textMultiLine|textCapSentences"
+                android:textAppearance="@style/TextAppearance.Article.Body"
+                android:textColor="@color/article_text_primary"
+                android:textColorHint="@color/article_text_secondary"
+                android:hint="@string/comments_input_hint"
+                android:background="@drawable/bg_comment_input_selector"
+                android:paddingStart="@dimen/spacing_medium"
+                android:paddingEnd="40dp"
+                android:paddingTop="@dimen/spacing_small"
+                android:paddingBottom="@dimen/spacing_small" />
+
+            <!-- Clear Button (X) - shown when text is not empty -->
+            <ImageView
+                android:id="@+id/btnClearComment"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/spacing_small"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="4dp"
+                app:tint="@color/article_text_secondary"
+                android:contentDescription="Xóa"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+        <!-- Send Button -->
+        <ImageButton
+            android:id="@+id/btnSendComment"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/spacing_small"
+            android:background="@drawable/sendbutton_default"
+            android:src="@drawable/ic_paper_plane_gray"
+            android:scaleType="fitXY"
+            android:contentDescription="Gửi"
+            android:padding="8dp"
+            style="@style/Widget.AppCompat.ImageButton" />
+
+    </LinearLayout>
+
+</LinearLayout>
+

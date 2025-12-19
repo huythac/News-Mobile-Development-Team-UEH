@@ -1,4 +1,40 @@
 <resources>
     <string name="app_name">News_app</string>
     <string name="login_prompt">Bạn đã có tài khoản? <font color="#84CC16"><b>Đăng nhập</b></font></string>
+    
+    <!-- Article Detail Screen -->
+    <string name="article_image_description">Hình ảnh bài viết</string>
+    <string name="article_error_loading">Không tải được bài viết</string>
+    <string name="article_retry">Thử lại</string>
+    <string name="article_author_default">Tác giả</string>
+    <string name="article_content_placeholder">Nội dung đang được cập nhật</string>
+    
+    <!-- Bottom Action Bar -->
+    <string name="action_comment">Bình luận</string>
+    <string name="action_save">Lưu</string>
+    <string name="action_share">Chia sẻ</string>
+    
+    <!-- Comments Bottom Sheet -->
+    <string name="comments_title">Bình luận</string>
+    <string name="comments_empty_title">Chưa có bình luận nào</string>
+    <string name="comments_empty_subtitle">Hãy là người đầu tiên bình luận về bài viết này</string>
+    <string name="comments_input_hint">Thêm bình luận</string>
+    <string name="comments_error_loading">Không tải được bình luận</string>
+    <string name="comments_retry">Thử lại</string>
+    <string name="comments_require_login">Vui lòng đăng nhập để bình luận</string>
+    <string name="comments_send_error">Không thể gửi bình luận</string>
+    <string name="comments_empty_content">Nội dung bình luận không được để trống</string>
+    <string name="comments_view_all">Xem tất cả</string>
+    
+    <!-- Related Articles Section -->
+    <string name="related_articles_title">Các bài viết khác của %1$s</string>
+    <string name="related_articles_empty">Chưa có bài viết khác</string>
+    <string name="related_articles_error">Không thể tải bài viết liên quan</string>
+    
+    <!-- Saved Screen -->
+    <string name="saved_empty_title">Chưa có bài viết nào được lưu</string>
+    <string name="saved_empty_subtitle">Nhấn lưu bất kỳ bài viết nào bạn yêu thích hoặc để đọc khi không có internet</string>
+    <string name="saved_start_explore">Bắt đầu khám phá</string>
+    <string name="history_empty_title">Bạn chưa đọc bài viết nào</string>
+    <string name="history_empty_subtitle">Các bài viết được bạn đọc sẽ được lưu ở đây</string>
 </resources>
