@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "803374431448-5fsijjee8msm6foba9t89v9crpvcgouj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "phivu.ueh.edu.vn.news_app",
+            "certificate_hash": "2c0ec73bad00a0b8d8dab2105e92106bee9a0923"
+          }
+        },
+        {
+          "client_id": "803374431448-aptbkajlcp7mngokpe36oft6ho4miu0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "phivu.ueh.edu.vn.news_app",
+            "certificate_hash": "5105df07685164a8e2873027d8c18fad09bab4d4"
+          }
+        },
+        {
           "client_id": "803374431448-nvbsu9nd6o9sk4km7c05llqqpkmb5chc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
