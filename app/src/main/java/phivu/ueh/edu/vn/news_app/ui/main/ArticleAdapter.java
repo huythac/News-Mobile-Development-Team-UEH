@@ -14,23 +14,29 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.squareup.picasso.Picasso;
 
+// --- CÁC THƯ VIỆN BẮT BUỘC PHẢI CÓ (Nếu thiếu sẽ báo đỏ) ---
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+// -----------------------------------------------------------
 
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.data.local.article.ArticleDAO;
 import phivu.ueh.edu.vn.news_app.data.local.saved.SavedArticleDAO;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.data.repository.CommentRepository;
+import phivu.ueh.edu.vn.news_app.data.repository.SavedArticleRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
 import phivu.ueh.edu.vn.news_app.utils.DateUtils;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
+
+
 
     private List<Article> articleList;
     private Context context;
@@ -39,10 +45,62 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     private ArticleRepository articleRepo;
     private CommentRepository commentRepo;
     private ExecutorService backgroundExecutor = Executors.newSingleThreadExecutor();
-    
+
     // Cache for saved states and comment counts
     private Map<String, Boolean> savedStates = new HashMap<>();
     private Map<String, Integer> commentCounts = new HashMap<>();
+
+    public enum Mode {
+        NORMAL,
+        HISTORY
+    }
+
+    private Mode mode;
+    private SavedArticleRepository savedRepo;
+    private String userId;
+
+    // Hai biến này nếu thiếu sẽ gây lỗi "Cannot resolve symbol"
+    private ExecutorService executor;
+
+//    public ArticleAdapter(Context context, List<Article> articleList, Mode mode) {
+//        this.context = context;
+//        this.articleList = articleList;
+//        this.mode = mode;
+//
+//        this.articleDAO = new ArticleDAO(context);
+//        this.savedRepo = new SavedArticleRepository(context);
+//        this.commentRepo = new CommentRepository();
+//
+//        this.userId = FirebaseAuth.getInstance().getUid();
+//
+//        loadSavedStates();
+//        loadCommentCounts();
+//    }
+
+    public ArticleAdapter(Context context, List<Article> articleList, Mode mode) {
+        this.context = context;
+        this.articleList = articleList;
+        this.mode = mode;
+
+        // 1. Khởi tạo User
+        this.userId = FirebaseAuth.getInstance().getUid();
+
+        // 2. Khởi tạo các Repository (QUAN TRỌNG: Phải new trước khi dùng)
+        this.articleDAO = new ArticleDAO(context);
+        this.commentRepo = new CommentRepository();
+        this.savedRepo = new SavedArticleRepository(context);
+
+        // 3. Khởi tạo các công cụ hỗ trợ (QUAN TRỌNG: Thiếu là CRASH)
+        this.executor = Executors.newSingleThreadExecutor();
+        this.savedStates = new HashMap<>();
+
+        // 4. Sau khi đã 'new' hết các biến ở trên thì mới được gọi hàm load
+        if (this.mode == Mode.NORMAL) {
+            loadSavedStates();
+        }
+        loadCommentCounts();
+    }
+
 
     public ArticleAdapter(Context context, List<Article> articleList) {
         this.context = context;
@@ -51,7 +109,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         this.articleDAO = new ArticleDAO(context);
         this.articleRepo = new ArticleRepository(context);
         this.commentRepo = new CommentRepository();
-        
+
         // Load saved states for all articles
         loadSavedStates();
     }
@@ -69,7 +127,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     private void loadSavedStates() {
         if (articleList == null || articleList.isEmpty()) return;
-        
+
         backgroundExecutor.execute(() -> {
             Map<String, Boolean> newSavedStates = new HashMap<>();
             for (Article article : articleList) {
@@ -83,7 +141,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 }
             }
             savedStates = newSavedStates;
-            
+
             // Update UI on main thread
             if (context instanceof android.app.Activity) {
                 ((android.app.Activity) context).runOnUiThread(() -> notifyDataSetChanged());
@@ -93,7 +151,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     private void loadCommentCounts() {
         if (articleList == null || articleList.isEmpty() || commentRepo == null) return;
-        
+
         for (Article article : articleList) {
             if (article != null && article.getId() != null) {
                 String articleId = article.getId();
@@ -101,7 +159,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 if (commentCounts.containsKey(articleId)) {
                     continue; // Already loaded
                 }
-                
+
                 // Load from Firestore
                 commentRepo.getCommentCount(articleId, new CommentRepository.CountCallback() {
                     @Override
@@ -187,7 +245,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         // Comment Count - Load from CommentRepository
         if (holder.layoutCommentCount != null && holder.tvCommentCount != null) {
             holder.layoutCommentCount.setVisibility(View.VISIBLE);
-            
+
             // Check cache first
             Integer cachedCount = commentCounts.get(articleId);
             if (cachedCount != null) {
@@ -214,12 +272,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         // Bookmark Icon - Check saved state
         if (holder.imgBookmark != null) {
             holder.imgBookmark.setVisibility(View.VISIBLE);
-            
+
             // Load initial saved state from cache
             Boolean cachedState = savedStates.get(articleId);
             boolean isSaved = cachedState != null && cachedState;
             updateBookmarkIcon(holder.imgBookmark, isSaved);
-            
+
             holder.imgBookmark.setOnClickListener(v -> {
                 toggleBookmark(article, holder.imgBookmark, position);
             });
@@ -234,7 +292,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                     // Resize image for thumbnail (100dp x 70dp from layout)
                     int thumbWidth = 200; // pixels
                     int thumbHeight = 140; // pixels
-                    
+
                     Picasso.get()
                             .load(imageUrl)
                             .resize(thumbWidth, thumbHeight)
@@ -274,94 +332,65 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         });
     }
 
+// File: ArticleAdapter.java
+
     private void toggleBookmark(Article article, ImageView bookmarkIcon, int position) {
-        if (article == null || article.getId() == null) {
+        // 1. Kiểm tra User ID
+        String currentUserId = FirebaseAuth.getInstance().getUid();
+
+        android.util.Log.e("CHECK_USER_ID", "1. Tại Adapter - UserID là: " + currentUserId);
+
+        if (currentUserId == null) {
+            Toast.makeText(context, "Vui lòng đăng nhập để lưu tin!", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        // --- [ĐOẠN CODE CỨU CÁNH - CHỐNG CRASH] ---
+        // Nếu savedRepo chưa có (bị null), ta tạo mới ngay lập tức
+        if (savedRepo == null) {
+            android.util.Log.e("FIX_BUG", "savedRepo đang NULL -> Đang tự động khởi tạo lại...");
+            if (context != null) {
+                savedRepo = new SavedArticleRepository(context);
+            } else {
+                android.util.Log.e("FIX_BUG", "Lỗi nặng: Context cũng NULL, không thể lưu!");
+                return;
+            }
+        }
+        // ------------------------------------------
+
         String articleId = article.getId();
+
+        // 2. Lấy trạng thái hiện tại (Thêm getOrDefault để tránh null)
         Boolean currentState = savedStates.get(articleId);
         boolean isCurrentlySaved = currentState != null && currentState;
 
-        backgroundExecutor.execute(() -> {
+        // 3. Đảo ngược trạng thái
+        boolean newStatus = !isCurrentlySaved;
+
+        if (newStatus) {
+            // --- LƯU BÀI ---
+            bookmarkIcon.setImageResource(R.drawable.bookmarks);
+            // Lưu ý: check kỹ màu sắc, nếu không có màu bookmark_saved thì dùng màu đỏ/xanh cứng
             try {
-                if (isCurrentlySaved) {
-                    // Unsave: Remove from SavedArticle table
-                    if (savedArticleDAO != null) {
-                        savedArticleDAO.unsaveArticle(articleId);
-                    }
-                    savedStates.put(articleId, false);
+                bookmarkIcon.setColorFilter(context.getResources().getColor(R.color.bookmark_saved));
+            } catch (Exception e) { /* Bỏ qua lỗi màu nếu chưa định nghĩa */ }
 
-                    if (context instanceof android.app.Activity) {
-                        ((android.app.Activity) context).runOnUiThread(() -> {
-                            updateBookmarkIcon(bookmarkIcon, false);
-                            Toast.makeText(context, "Đã bỏ lưu bài viết", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                } else {
-                    // Save: Ensure article exists in Article table first, then add to SavedArticle
-                    Article existing = articleDAO.getById(articleId);
-                    if (existing == null || existing.getContent() == null || existing.getContent().trim().isEmpty()) {
-                        // Article not in cache or missing content, fetch from Firestore first
-                        articleRepo.syncArticleFromRemote(articleId, new ArticleRepository.SingleCallback() {
-                            @Override
-                            public void onSuccess(Article syncedArticle) {
-                                if (syncedArticle != null && savedArticleDAO != null) {
-                                    backgroundExecutor.execute(() -> {
-                                        try {
-                                            savedArticleDAO.saveArticle(articleId);
-                                            savedStates.put(articleId, true);
-                                            if (context instanceof android.app.Activity) {
-                                                ((android.app.Activity) context).runOnUiThread(() -> {
-                                                    updateBookmarkIcon(bookmarkIcon, true);
-                                                    Toast.makeText(context, "Đã lưu bài viết", Toast.LENGTH_SHORT).show();
-                                                });
-                                            }
-                                        } catch (Exception e) {
-                                            if (context instanceof android.app.Activity) {
-                                                ((android.app.Activity) context).runOnUiThread(() -> {
-                                                    Toast.makeText(context, "Lỗi khi lưu bài viết", Toast.LENGTH_SHORT).show();
-                                                });
-                                            }
-                                        }
-                                    });
-                                }
-                            }
+            android.util.Log.e("CHECK_FLOW", ">>> Đang gọi lệnh SAVE...");
+            savedRepo.save(currentUserId, articleId); // Giờ chắc chắn savedRepo không null nữa
 
-                            @Override
-                            public void onError(String err) {
-                                if (context instanceof android.app.Activity) {
-                                    ((android.app.Activity) context).runOnUiThread(() -> {
-                                        Toast.makeText(context, "Không thể tải bài viết để lưu", Toast.LENGTH_SHORT).show();
-                                    });
-                                }
-                            }
-                        });
-                    } else {
-                        // Article exists, just save to SavedArticle
-                        if (savedArticleDAO != null) {
-                            savedArticleDAO.saveArticle(articleId);
-                        }
-                        savedStates.put(articleId, true);
+        } else {
+            // --- BỎ LƯU ---
+            bookmarkIcon.setImageResource(R.drawable.bookmark_simple);
+            try {
+                bookmarkIcon.setColorFilter(context.getResources().getColor(R.color.bookmark_default));
+            } catch (Exception e) { /* Bỏ qua */ }
 
-                        if (context instanceof android.app.Activity) {
-                            ((android.app.Activity) context).runOnUiThread(() -> {
-                                updateBookmarkIcon(bookmarkIcon, true);
-                                Toast.makeText(context, "Đã lưu bài viết", Toast.LENGTH_SHORT).show();
-                            });
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                if (context instanceof android.app.Activity) {
-                    ((android.app.Activity) context).runOnUiThread(() -> {
-                        Toast.makeText(context, "Lỗi khi lưu bài viết", Toast.LENGTH_SHORT).show();
-                    });
-                }
-            }
-        });
+            savedRepo.unsave(currentUserId, articleId);
+        }
+
+        // 4. Cập nhật lại bộ nhớ đệm
+        savedStates.put(articleId, newStatus);
     }
-
     private void updateBookmarkIcon(ImageView icon, boolean isSaved) {
         if (icon == null) return;
 
