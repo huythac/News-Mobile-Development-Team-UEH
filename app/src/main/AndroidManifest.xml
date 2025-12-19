@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -20,6 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
 
         <activity
             android:name=".ui.main.MainActivity"
@@ -58,6 +61,14 @@
 
         <activity android:name=".ui.search.SearchInputActivity" />
         <activity android:name=".ui.search.SearchResultActivity" />
+
+        <!-- Create Article -->
+        <activity
+            android:name=".ui.create.CreateArticleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.create.CreatePreviewActivity"
+            android:exported="false" />
 
 
 

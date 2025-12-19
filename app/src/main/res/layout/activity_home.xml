@@ -139,10 +139,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_above="@id/bottomNavigation"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_edit"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="#FFFFFF"
         app:backgroundTint="#8BC34A"
-        android:visibility="gone" />
+        app:borderWidth="0dp"
+        android:elevation="6dp"
+        android:contentDescription="Đăng bài viết mới"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 
 </RelativeLayout>

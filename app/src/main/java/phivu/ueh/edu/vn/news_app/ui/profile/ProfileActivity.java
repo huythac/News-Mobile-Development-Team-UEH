@@ -32,6 +32,12 @@ import phivu.ueh.edu.vn.news_app.ui.main.HomeActivity;
 import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
 import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import android.content.Intent;
+import android.view.View;
+import phivu.ueh.edu.vn.news_app.ui.create.CreateArticleActivity;
+
+
 public class ProfileActivity extends AppCompatActivity {
 
     // Views Profile cũ
@@ -65,6 +71,21 @@ public class ProfileActivity extends AppCompatActivity {
         initViews();
         setupEvents();
         setupBottomNavigation();
+
+        // 1. Ánh xạ nút FAB từ XML
+        FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
+
+        // (Tùy chọn) Nếu muốn hiện nút này luôn để test (kể cả khi chưa check quyền Admin)
+        fabEditBio.setVisibility(View.VISIBLE);
+
+        // 2. Bắt sự kiện Click -> Chuyển sang màn hình CreateArticleActivity
+        fabEditBio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfileActivity.this, CreateArticleActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initViews() {
