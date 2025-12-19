@@ -36,9 +36,12 @@ dependencies {
 
     // IMAGE
     implementation("com.squareup.picasso:picasso:2.8")
+    implementation(libs.firebase.storage)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }
 
