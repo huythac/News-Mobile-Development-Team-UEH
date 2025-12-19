@@ -202,9 +202,9 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
         // Safety check
         if (imgHeader == null || tvTitle == null || tvAuthor == null || tvDate == null ||
-            chipCategory == null || tvDescription == null || dividerContent == null || tvContent == null ||
-            btnComment == null || btnSave == null || btnShare == null || iconSave == null ||
-            progressLoading == null || layoutError == null || tvError == null || btnRetry == null) {
+                chipCategory == null || tvDescription == null || dividerContent == null || tvContent == null ||
+                btnComment == null || btnSave == null || btnShare == null || iconSave == null ||
+                progressLoading == null || layoutError == null || tvError == null || btnRetry == null) {
             Toast.makeText(this, "Lỗi khởi tạo giao diện", Toast.LENGTH_SHORT).show();
             finish();
             return;
@@ -360,19 +360,19 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // Always show section when we have authorId
         runOnUiThreadSafe(() -> {
             if (isDestroyed) return;
-            
+
             // Show section
             if (layoutRelatedArticles != null) {
                 layoutRelatedArticles.setVisibility(View.VISIBLE);
             }
-            
+
             // Update title with author name
             if (tvRelatedArticlesTitle != null) {
-                String titleText = getString(R.string.related_articles_title, 
+                String titleText = getString(R.string.related_articles_title,
                         !TextUtils.isEmpty(authorName) ? authorName : "tác giả");
                 tvRelatedArticlesTitle.setText(titleText);
             }
-            
+
             // Show loading state
             if (progressRelatedArticles != null) {
                 progressRelatedArticles.setVisibility(View.VISIBLE);
@@ -389,7 +389,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         });
 
         // Fetch related articles
-        articleRepo.getArticlesByAuthor(authorId, currentArticleId, 10, 
+        articleRepo.getArticlesByAuthor(authorId, currentArticleId, 10,
                 new ArticleRepository.ListCallback() {
                     @Override
                     public void onSuccess(List<Article> list) {
@@ -516,7 +516,6 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
                         // Make list effectively final
                         final List<Comment> finalList = (list != null) ? list : new ArrayList<>();
-
                         runOnUiThreadSafe(() -> {
                             commentList.clear();
                             commentList.addAll(finalList);
@@ -571,10 +570,10 @@ public class ArticleDetailActivity extends AppCompatActivity {
                     previewList.add(allComments.get(i));
                 }
             }
-            
+
             // Always update adapter (even if empty)
             commentPreviewAdapter.updateData(previewList);
-            
+
             // Show RecyclerView if there are comments, hide if empty
             if (previewList.isEmpty()) {
                 rvCommentsPreview.setVisibility(View.GONE);
@@ -789,17 +788,17 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 imageUrl = imageUrl.trim();
                 try {
                     // Validate URL format (basic check)
-                    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://") || 
-                        imageUrl.startsWith("file://") || imageUrl.startsWith("content://")) {
-                        
+                    if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://") ||
+                            imageUrl.startsWith("file://") || imageUrl.startsWith("content://")) {
+
                         // Get screen width to calculate max image size
                         int screenWidth = getResources().getDisplayMetrics().widthPixels;
                         int imageHeight = (int) getResources().getDimension(R.dimen.article_detail_image_height);
-                        
+
                         // Resize image to prevent "too large bitmap" error
                         int maxWidth = screenWidth;
                         int maxHeight = imageHeight * 2; // Allow 2x for high DPI
-                        
+
                         Picasso.get()
                                 .load(imageUrl)
                                 .resize(maxWidth, maxHeight)
@@ -927,7 +926,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
      */
     private void runOnUiThreadSafe(Runnable action) {
         if (action == null) return;
-        
+
         if (Looper.myLooper() == Looper.getMainLooper()) {
             // Already on main thread
             if (!isDestroyed && !isFinishing()) {
@@ -1128,7 +1127,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         try {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.setType("text/plain");
-            
+
             String shareText = currentArticle.getTitle() != null ? currentArticle.getTitle().trim() : "";
             String description = currentArticle.getDescription();
             if (description != null && !description.trim().isEmpty()) {
@@ -1140,9 +1139,9 @@ public class ArticleDetailActivity extends AppCompatActivity {
             }
 
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, 
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT,
                     currentArticle.getTitle() != null && !currentArticle.getTitle().trim().isEmpty()
-                    ? currentArticle.getTitle().trim() : "Bài viết");
+                            ? currentArticle.getTitle().trim() : "Bài viết");
 
             startActivity(Intent.createChooser(shareIntent, "Chia sẻ bài viết"));
         } catch (Exception e) {

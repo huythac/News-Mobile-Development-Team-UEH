@@ -52,28 +52,47 @@ public class Database extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS ReadHistory (" +
                 "articleId TEXT PRIMARY KEY, " +
                 "readAt INTEGER NOT NULL)");
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
-        if (oldV < 8) {
-            // Tạo bảng mới nếu chưa có (không làm mất dữ liệu)
-            db.execSQL("CREATE TABLE IF NOT EXISTS SavedArticle (" +
-                    "articleId TEXT PRIMARY KEY, " +
-                    "savedAt INTEGER NOT NULL)");
-            
-            db.execSQL("CREATE TABLE IF NOT EXISTS ReadHistory (" +
-                    "articleId TEXT PRIMARY KEY, " +
-                    "readAt INTEGER NOT NULL)");
-            
-            // Migrate dữ liệu từ field `saved` sang bảng SavedArticle (nếu có)
-            try {
-                db.execSQL("INSERT OR IGNORE INTO SavedArticle (articleId, savedAt) " +
-                        "SELECT id, lastSynced FROM Article WHERE saved=1");
-            } catch (Exception e) {
-                // Ignore migration errors
-            }
-        }
+        db.execSQL("DROP TABLE IF EXISTS Article");
+        db.execSQL("DROP TABLE IF EXISTS Category");
+        db.execSQL("DROP TABLE IF EXISTS SavedArticle");
+        db.execSQL("DROP TABLE IF EXISTS ReadHistory");
+        onCreate(db);
     }
-}
 
+
+//    @Override
+//    public void onUpgrade(SQLiteDatabase db, int oldV, int newV) {
+//        if (oldV < 8) {
+//            // Tạo bảng mới nếu chưa có (không làm mất dữ liệu)
+//            db.execSQL("CREATE TABLE IF NOT EXISTS SavedArticle (" +
+//                    "articleId TEXT PRIMARY KEY, " +
+//                    "savedAt INTEGER NOT NULL)");
+//
+//            db.execSQL("CREATE TABLE IF NOT EXISTS ReadHistory (" +
+//                    "articleId TEXT PRIMARY KEY, " +
+//                    "readAt INTEGER NOT NULL)");
+//
+//            // Migrate dữ liệu từ field `saved` sang bảng SavedArticle (nếu có)
+//            try {
+//                db.execSQL("INSERT OR IGNORE INTO SavedArticle (articleId, savedAt) " +
+//                        "SELECT id, lastSynced FROM Article WHERE saved=1");
+//            } catch (Exception e) {
+//                // Ignore migration errors
+//            }
+//
+//            // 🔥 BẮT BUỘC
+//            db.execSQL("CREATE TABLE IF NOT EXISTS SavedArticle (" +
+//                    "articleId TEXT PRIMARY KEY, " +
+//                    "savedAt INTEGER NOT NULL)");
+//
+//            db.execSQL("CREATE TABLE IF NOT EXISTS ReadHistory (" +
+//                    "articleId TEXT PRIMARY KEY, " +
+//                    "readAt INTEGER NOT NULL)");
+//        }
+//    }
+}
