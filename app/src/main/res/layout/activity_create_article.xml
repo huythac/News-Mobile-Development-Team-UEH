@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="?attr/colorSurface"
     android:padding="16dp">
 
     <LinearLayout
@@ -19,7 +19,8 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_close"
-            android:layout_gravity="center_vertical"/>
+            android:layout_gravity="center_vertical"
+            app:tint="?attr/colorOnSurface"/>
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
@@ -50,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:text="Tiêu đề"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -61,16 +62,16 @@
                 android:background="@drawable/bg_input_rounded"
                 android:padding="16dp"
                 android:hint="Nhập tiêu đề của bài viết"
-                android:textColorHint="#999999"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp"
-                android:textColor="#000000"/>
+                android:textColor="?attr/colorOnSurface"/>
 
             <TextView
                 android:id="@+id/tvTitleCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="0/120 ký tự"
-                android:textColor="#999999"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="24dp"/>
@@ -80,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:text="Mô tả"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -91,9 +92,9 @@
                 android:background="@drawable/bg_input_rounded"
                 android:padding="16dp"
                 android:hint="Viết giới thiệu về bài viết của bạn"
-                android:textColorHint="#999999"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:inputType="textMultiLine"
                 android:minLines="2"/>
 
@@ -102,7 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="0/240 ký tự"
-                android:textColor="#999999"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="24dp"/>
@@ -112,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:text="Ảnh bìa"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -133,13 +134,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Chấp nhận :"
-                        android:textColor="#333333"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="14sp"/>
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="PNG, JPEG, PDF. Kích thước tối đa 20 MB"
-                        android:textColor="#999999"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="13sp"
                         android:layout_marginTop="4dp"/>
                 </LinearLayout>
@@ -170,12 +171,12 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/ic_camera_alt"
-                            app:tint="#000000"/>
+                            app:tint="?attr/colorOnSurface"/>
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tải ảnh lên"
-                            android:textColor="#000000"
+                            android:textColor="?attr/colorOnSurface"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="8dp"/>
@@ -188,7 +189,7 @@
                 android:layout_height="wrap_content"
                 android:text="Nội dung"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"/>
 
@@ -199,9 +200,9 @@
                 android:background="@drawable/bg_input_rounded"
                 android:padding="16dp"
                 android:hint="Viết nội dung bài viết"
-                android:textColorHint="#999999"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
                 android:textSize="14sp"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:inputType="textMultiLine"
                 android:minLines="4"
                 android:gravity="top"/>
@@ -211,7 +212,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tối đa 2000 ký tự"
-                android:textColor="#999999"
+                android:textColor="?attr/colorOnSurfaceVariant"
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="40dp"/>

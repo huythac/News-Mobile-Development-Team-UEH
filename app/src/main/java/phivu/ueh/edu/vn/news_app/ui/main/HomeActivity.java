@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,10 +36,11 @@ import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.content.Intent;
 import android.view.View;
+import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
 import phivu.ueh.edu.vn.news_app.ui.create.CreateArticleActivity;
 
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends BaseActivity {
 
     private RecyclerView rvArticles, rvTopics;
 
@@ -207,20 +210,24 @@ public class HomeActivity extends AppCompatActivity {
     // TAB UI
     // ======================================================
     private void setTabSelected(boolean isForYou) {
+        // Get theme-aware colors
+        int colorActive = ContextCompat.getColor(this, R.color.text_primary);
+        int colorInactive = ContextCompat.getColor(this, R.color.text_tertiary);
+        
         if (isForYou) {
-            tvForYou.setTextColor(Color.BLACK);
+            tvForYou.setTextColor(colorActive);
             tvForYou.setTypeface(null, Typeface.BOLD);
             underlineForYou.setVisibility(View.VISIBLE);
 
-            tvTopic.setTextColor(Color.GRAY);
+            tvTopic.setTextColor(colorInactive);
             tvTopic.setTypeface(null, Typeface.NORMAL);
             underlineTopic.setVisibility(View.INVISIBLE);
         } else {
-            tvTopic.setTextColor(Color.BLACK);
+            tvTopic.setTextColor(colorActive);
             tvTopic.setTypeface(null, Typeface.BOLD);
             underlineTopic.setVisibility(View.VISIBLE);
 
-            tvForYou.setTextColor(Color.GRAY);
+            tvForYou.setTextColor(colorInactive);
             tvForYou.setTypeface(null, Typeface.NORMAL);
             underlineForYou.setVisibility(View.INVISIBLE);
         }

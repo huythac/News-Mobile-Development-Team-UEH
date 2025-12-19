@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="?attr/colorSurface">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:background="?attr/colorSurface"
         android:elevation="8dp"
         app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled" />
@@ -35,7 +35,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_settings"
-                app:tint="#757575"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:layout_gravity="end"/>
 
             <LinearLayout
@@ -71,7 +71,7 @@
                         android:text="Tên người dùng"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#000000"/>
+                        android:textColor="?attr/colorOnSurface"/>
                 </LinearLayout>
             </LinearLayout>
 
@@ -80,11 +80,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Chỉnh sửa trang cá nhân"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textAllCaps="false"
-                app:backgroundTint="#F5F5F5"
+                app:backgroundTint="?attr/colorSurfaceVariant"
                 app:cornerRadius="20dp"
                 app:elevation="0dp"
                 android:stateListAnimator="@null"
@@ -110,13 +110,13 @@
                         android:layout_height="wrap_content"
                         android:text="Thông tin"
                         android:textStyle="bold"
-                        android:textColor="#000000"
+                        android:textColor="?attr/colorOnSurface"
                         android:textSize="16sp"/>
                     <View
                         android:id="@+id/underlineInfo"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="#000000"
+                        android:background="?attr/colorPrimary"
                         android:layout_marginTop="8dp"/>
                 </LinearLayout>
 
@@ -133,13 +133,13 @@
                         android:layout_height="wrap_content"
                         android:text="Bài viết"
                         android:textStyle="normal"
-                        android:textColor="#757575"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="16sp"/>
                     <View
                         android:id="@+id/underlineArticles"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
-                        android:background="#000000"
+                        android:background="?attr/colorPrimary"
                         android:layout_marginTop="8dp"
                         android:visibility="invisible"/>
                 </LinearLayout>
@@ -148,7 +148,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#EEEEEE"/>
+                android:background="@color/divider"/>
 
             <LinearLayout
                 android:id="@+id/layoutInfoContent"
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:text="Đây là phần giới thiệu bản thân..."
                     android:textSize="16sp"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorOnSurface"
                     android:lineSpacingExtra="4dp"
                     android:layout_marginTop="24dp"
                     android:visibility="gone"/>
@@ -188,7 +188,7 @@
                         android:text="Bạn chưa thêm bất kỳ thông tin nào"
                         android:textStyle="bold"
                         android:textSize="16sp"
-                        android:textColor="#000000"
+                        android:textColor="?attr/colorOnSurface"
                         android:layout_marginTop="16dp"/>
 
                     <TextView

@@ -22,9 +22,10 @@ import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.auth.SessionManager;
 import phivu.ueh.edu.vn.news_app.data.remote.UserFirebaseDAO;
 import phivu.ueh.edu.vn.news_app.model.User;
+import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
 import phivu.ueh.edu.vn.news_app.ui.main.HomeActivity;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 1000;
     private GoogleSignInClient googleClient;

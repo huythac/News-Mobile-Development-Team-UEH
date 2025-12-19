@@ -1,207 +1,231 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#FFFFFF"
-    android:paddingTop="16dp">
+    android:background="?attr/colorSurface"
+    android:orientation="vertical">
 
+    <!-- Header Section -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingBottom="16dp">
+        android:layout_height="56dp"
+        android:paddingHorizontal="22dp">
 
         <ImageView
             android:id="@+id/btnBackSettings"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/abc_ic_ab_back_material"
-            app:tint="#000000"
-            android:layout_centerVertical="true"/>
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="@string/action_back"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:tint="?attr/colorOnSurface" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="37dp"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Cài đặt"
-            android:textColor="#000000"
-            android:textSize="20sp"
+            android:textAppearance="@style/TextAppearance.Setting.ScreenTitle"
+            android:textColor="?attr/colorOnSurface"
             android:textStyle="bold" />
     </RelativeLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingHorizontal="16dp">
+            android:paddingBottom="32dp">
 
+            <!-- Section: Tùy chỉnh -->
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tùy chỉnh"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"/>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="16dp">
+                android:text="Tùy chỉnh"
+                android:textAppearance="@style/TextAppearance.Setting.SectionTitle"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Language Item -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btnRowLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="18dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
                 <ImageView
                     android:id="@+id/icLang"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_sort_by_size"
-                    app:tint="#757575"
+                    android:src="@drawable/ic_language"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
+                    android:id="@+id/tvLanguage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Ngôn ngữ"
-                    android:textSize="16sp"
-                    android:textColor="#000000"
-                    android:layout_marginStart="16dp"
+                    android:textAppearance="@style/TextAppearance.Setting.ItemTitle"
+                    android:layout_marginStart="14dp"
                     app:layout_constraintStart_toEndOf="@id/icLang"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <ImageView
-                    android:id="@+id/arr1"
+                    android:id="@+id/arrLanguage"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/abc_ic_ab_back_material"
-                    android:rotation="180"
-                    app:tint="#757575"
+                    android:src="@drawable/ic_chevron_right"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvLanguageValue"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Tiếng việt (Vietnamese)"
-                    android:textSize="14sp"
-                    android:textColor="#757575"
+                    android:text="@string/language_vietnamese_display"
+                    android:textAppearance="@style/TextAppearance.Setting.ItemValue"
                     android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toStartOf="@id/arr1"
+                    android:gravity="end"
+                    app:layout_constraintEnd_toStartOf="@id/arrLanguage"
+                    app:layout_constraintStart_toEndOf="@id/tvLanguage"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Theme Item -->
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/btnRowTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="16dp">
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="18dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackground">
 
                 <ImageView
                     android:id="@+id/icTheme"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_gallery"
-                    app:tint="#757575"
+                    android:src="@drawable/ic_palette"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
+                    android:id="@+id/tvTheme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Giao diện"
-                    android:textSize="16sp"
-                    android:textColor="#000000"
-                    android:layout_marginStart="16dp"
+                    android:text="@string/theme"
+                    android:textAppearance="@style/TextAppearance.Setting.ItemTitle"
+                    android:layout_marginStart="14dp"
                     app:layout_constraintStart_toEndOf="@id/icTheme"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <ImageView
-                    android:id="@+id/arr2"
+                    android:id="@+id/arrTheme"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/abc_ic_ab_back_material"
-                    android:rotation="180"
-                    app:tint="#757575"
+                    android:src="@drawable/ic_chevron_right"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tvThemeValue"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Nền sáng"
-                    android:textSize="14sp"
-                    android:textColor="#757575"
+                    android:text="@string/theme_light_display"
+                    android:textAppearance="@style/TextAppearance.Setting.ItemValue"
                     android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toStartOf="@id/arr2"
+                    android:gravity="end"
+                    app:layout_constraintEnd_toStartOf="@id/arrTheme"
+                    app:layout_constraintStart_toEndOf="@id/tvTheme"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Section: Cài đặt và bảo mật -->
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Cài đặt và bảo mật"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"/>
+                android:textAppearance="@style/TextAppearance.Setting.SectionTitle"
+                android:layout_marginStart="22dp"
+                android:layout_marginEnd="22dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="12dp" />
 
+            <!-- Notifications Item -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="12dp">
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="18dp">
 
                 <ImageView
                     android:id="@+id/icNoti"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_popup_reminder"
-                    app:tint="#757575"
+                    android:src="@drawable/ic_notifications"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:tint="?attr/colorOnSurface" />
 
                 <TextView
+                    android:id="@+id/tvNotifications"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Thông báo"
-                    android:textSize="16sp"
-                    android:textColor="#000000"
-                    android:layout_marginStart="16dp"
+                    android:textAppearance="@style/TextAppearance.Setting.ItemTitle"
+                    android:layout_marginStart="14dp"
                     app:layout_constraintStart_toEndOf="@id/icNoti"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
                     android:id="@+id/swNoti"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    app:thumbTint="#FFFFFF"
-                    app:trackTint="#8BC34A"
+                    app:useMaterialThemeColors="false"
+                    app:thumbTint="@color/switch_thumb_selector"
+                    app:trackTint="@color/switch_track_selector"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Logout Item -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/btnRowLogout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="16dp"
+                android:paddingHorizontal="22dp"
+                android:paddingVertical="18dp"
                 android:clickable="true"
                 android:focusable="true"
                 android:background="?attr/selectableItemBackground">
@@ -210,32 +234,33 @@
                     android:id="@+id/icLogout"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_lock_power_off"
-                    app:tint="#F44336"
+                    android:src="@drawable/ic_logout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:tint="#FF3B30" />
 
                 <TextView
+                    android:id="@+id/tvLogout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Đăng xuất"
-                    android:textSize="16sp"
-                    android:textColor="#F44336"
-                    android:layout_marginStart="16dp"
+                    android:textAppearance="@style/TextAppearance.Setting.ItemTitle"
+                    android:textColor="#FF3B30"
+                    android:layout_marginStart="14dp"
                     app:layout_constraintStart_toEndOf="@id/icLogout"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent" />
 
                 <ImageView
+                    android:id="@+id/arrLogout"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/abc_ic_ab_back_material"
-                    android:rotation="180"
-                    app:tint="#757575"
+                    android:src="@drawable/ic_chevron_right"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:tint="?attr/colorOnSurface" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>

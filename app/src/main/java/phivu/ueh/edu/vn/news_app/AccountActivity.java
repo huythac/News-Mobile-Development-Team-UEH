@@ -20,8 +20,10 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
 
-import phivu.ueh.edu.vn.news_app.article.Article;
-import phivu.ueh.edu.vn.news_app.article.ArticleRepository;
+import phivu.ueh.edu.vn.news_app.model.Article;
+import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
+import phivu.ueh.edu.vn.news_app.ui.main.ArticleAdapter;
+import phivu.ueh.edu.vn.news_app.ui.main.MainActivity;
 
 public class AccountActivity extends AppCompatActivity {
 
@@ -124,17 +126,28 @@ public class AccountActivity extends AppCompatActivity {
     private void loadMyArticles() {
         articleRepository = new ArticleRepository(this);
         // Tạm thời lấy tất cả (Sau này bạn viết thêm hàm getByAuthorId trong Repo)
-        List<Article> myList = articleRepository.getAll();
+        articleRepository.getList(new ArticleRepository.ListCallback() {
+            @Override
+            public void onSuccess(List<Article> myList) {
+                if (myList != null && !myList.isEmpty()) {
+                    adapter = new ArticleAdapter(AccountActivity.this, myList);
+                    rvMyArticles.setAdapter(adapter);
+                    rvMyArticles.setVisibility(View.VISIBLE);
+                    layoutEmptyState.setVisibility(View.GONE);
+                } else {
+                    // Nếu không có bài nào -> Hiện Empty State
+                    rvMyArticles.setVisibility(View.GONE);
+                    layoutEmptyState.setVisibility(View.VISIBLE);
+                }
+            }
 
-        if (myList != null && !myList.isEmpty()) {
-            adapter = new ArticleAdapter(myList, this);
-            rvMyArticles.setAdapter(adapter);
-            rvMyArticles.setVisibility(View.VISIBLE);
-            layoutEmptyState.setVisibility(View.GONE);
-        } else {
-            // Nếu không có bài nào -> Hiện Empty State
-            rvMyArticles.setVisibility(View.GONE);
-            layoutEmptyState.setVisibility(View.VISIBLE);
-        }
+            @Override
+            public void onError(String err) {
+                // Nếu lỗi -> Hiện Empty State
+                rvMyArticles.setVisibility(View.GONE);
+                layoutEmptyState.setVisibility(View.VISIBLE);
+                Toast.makeText(AccountActivity.this, "Không tải được bài viết", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

@@ -20,8 +20,9 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import phivu.ueh.edu.vn.news_app.R;
 import phivu.ueh.edu.vn.news_app.data.remote.UserFirebaseDAO;
 import phivu.ueh.edu.vn.news_app.model.User;
+import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final int RC_SIGN_IN = 100;
 

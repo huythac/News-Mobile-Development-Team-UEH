@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FFFFFFFF</color>
+    <color name="white">#FF121212</color>
+    
+    <!-- Article Detail Screen Colors -->
+    <color name="article_background">#FF121212</color>
+    <color name="article_text_primary">#FFFFFFFF</color>
+    <color name="article_text_secondary">#FFB0B0B0</color>
+    <color name="article_divider">#FF424242</color>
+    
+    <!-- Category Chip Colors -->
+    <color name="article_chip_background">#FF2C2C2C</color>
+    <color name="article_chip_text">#FFE0E0E0</color>
+    
+    <!-- Toolbar Colors -->
+    <color name="article_toolbar_background">#FF121212</color>
+    <color name="article_toolbar_text">#FFFFFFFF</color>
+    
+    <!-- Bottom Action Bar Colors -->
+    <color name="bottom_bar_icon_default">#FFB0B0B0</color>
+    <color name="bottom_bar_icon_selected">#FFFFFFFF</color>
+    <color name="bottom_bar_text_default">#FFB0B0B0</color>
+    <color name="bottom_bar_text_selected">#FFFFFFFF</color>
+    
+    <!-- Comments Input Colors -->
+    <color name="comment_input_background_default">#FF2C2C2C</color>
+    <color name="comment_input_background_focused">#FF424242</color>
+    <color name="comment_input_border_focused">#2196F3</color>
+    <color name="comment_send_button_default">#FFB0B0B0</color>
+    <color name="comment_send_button_active">#4CAF50</color>
+    
+    <!-- Bookmark Colors -->
+    <color name="bookmark_default">#FFB0B0B0</color>
+    <color name="bookmark_saved">#84CC16</color>
+    
+    <!-- Settings Screen Colors -->
+    <color name="settings_switch_on">#84CC16</color>
+    <color name="settings_logout">#EF4444</color>
+    <color name="settings_text_primary">#FFFFFFFF</color>
+    <color name="settings_background">#FF121212</color>
+    
+    <!-- Common UI Colors -->
+    <color name="background_primary">#FF121212</color>
+    <color name="background_secondary">#FF1E1E1E</color>
+    <color name="text_primary">#FFFFFFFF</color>
+    <color name="text_secondary">#FFB0B0B0</color>
+    <color name="text_tertiary">#FF757575</color>
+    <color name="divider">#FF424242</color>
+    <color name="icon_default">#FFFFFFFF</color>
+    <color name="icon_secondary">#FFB0B0B0</color>
+    <color name="handle_bar">#FF424242</color>
+    
+    <!-- Follow Button Colors -->
+    <color name="follow_button_background">#FF121212</color>
+    <color name="follow_button_stroke">#FF424242</color>
+    <color name="follow_button_text">#FFFFFFFF</color>
+    <color name="follow_button_selected_background">#FFFFFFFF</color>
+    <color name="follow_button_selected_text">#FF000000</color>
+    
+    <!-- Category Icon Background -->
+    <color name="category_icon_background">#FF2C2C2C</color>
+</resources>
+

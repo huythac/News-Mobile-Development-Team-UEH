@@ -97,7 +97,7 @@ public class SearchInputActivity extends AppCompatActivity {
                     // Tạo nút bấm (TextView) động
                     TextView chip = new TextView(SearchInputActivity.this);
                     chip.setText(cat.getName());
-                    chip.setTextColor(getResources().getColor(R.color.black));
+                    chip.setTextColor(getResources().getColor(R.color.article_chip_text, getTheme()));
                     chip.setTextSize(14);
                     chip.setBackgroundResource(R.drawable.bg_chip_block); // Đảm bảo bạn đã có file này
                     chip.setPadding(40, 20, 40, 20); // Padding cho nút
@@ -148,7 +148,7 @@ public class SearchInputActivity extends AppCompatActivity {
             TextView tv = new TextView(this);
             tv.setText(key);
             tv.setTextSize(16);
-            tv.setTextColor(0xFF333333);
+            tv.setTextColor(getResources().getColor(R.color.text_primary, getTheme()));
             tv.setPadding(30, 0, 0, 0);
 
             item.addView(icon);
