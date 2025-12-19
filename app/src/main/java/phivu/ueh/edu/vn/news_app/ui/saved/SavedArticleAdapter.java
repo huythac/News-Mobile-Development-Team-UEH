@@ -426,7 +426,7 @@ public class SavedArticleAdapter extends RecyclerView.Adapter<SavedArticleAdapte
         // Delete from history on background thread
         backgroundExecutor.execute(() -> {
             try {
-                readHistoryDAO.deleteFromHistory(articleId);
+                readHistoryDAO.deleteHistory(articleId);
                 // Remove from list
                 if (context instanceof android.app.Activity) {
                     ((android.app.Activity) context).runOnUiThread(() -> {

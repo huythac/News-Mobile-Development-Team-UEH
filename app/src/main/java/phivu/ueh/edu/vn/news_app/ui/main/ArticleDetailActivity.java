@@ -129,6 +129,20 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // Sanitize articleId
         currentArticleId = currentArticleId.trim();
 
+        // ============================================================
+        // --- THÊM ĐOẠN NÀY ĐỂ LƯU LỊCH SỬ ĐỌC ---
+        // ============================================================
+        // 1. Khởi tạo DAO
+        phivu.ueh.edu.vn.news_app.data.local.history.ReadHistoryDAO historyDAO =
+                new phivu.ueh.edu.vn.news_app.data.local.history.ReadHistoryDAO(this);
+
+        // 2. Gọi hàm addToHistory (Thay vì recordRead cũ)
+        // Chạy trong background thread để không làm lag UI khi mở bài
+        new Thread(() -> {
+            historyDAO.addToHistory(currentArticleId);
+        }).start();
+        // ============================================================
+
         initViews();
         initRepositories();
         setupToolbar();
@@ -209,6 +223,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
             finish();
             return;
         }
+
     }
 
     private void initRepositories() {
@@ -630,7 +645,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
                 // Record read history (background thread)
                 try {
                     if (readHistoryDAO != null) {
-                        readHistoryDAO.recordRead(currentArticleId);
+                        readHistoryDAO.addToHistory(currentArticleId);
                     }
                 } catch (Exception e) {
                     // Ignore database errors
