@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@color/article_text_primary"
+    android:gravity="center_vertical"
+    android:minHeight="56dp">
+
+    <!-- Check Icon -->
+    <ImageView
+        android:id="@+id/iconCheck"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_check_circle"
+        android:contentDescription="@string/notification_disabled"
+        app:tint="#84CC16"
+        android:layout_marginEnd="12dp" />
+
+    <!-- Message Text -->
+    <TextView
+        android:id="@+id/snackbarText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/notification_disabled"
+        android:textColor="@color/article_toolbar_background"
+        android:textSize="14sp"
+        android:fontFamily="@font/mona_sans"
+        android:textStyle="normal" />
+
+    <!-- Close Button (X) -->
+    <ImageView
+        android:id="@+id/btnCloseSnackbar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_close"
+        android:contentDescription="@string/close"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:padding="4dp"
+        app:tint="?attr/colorOnSurface"
+        android:layout_marginStart="12dp" />
+
+</LinearLayout>
+

@@ -86,5 +86,17 @@
     <dimen name="comments_empty_icon_size">64dp</dimen>
     <dimen name="comments_empty_margin_top">48dp</dimen>
     <dimen name="comments_empty_text_margin_top">16dp</dimen>
+    
+    <!-- Settings Screen Spacing -->
+    <dimen name="settings_header_padding_top">16dp</dimen>
+    <dimen name="settings_header_padding_bottom">6dp</dimen>
+    <dimen name="settings_padding_horizontal">22dp</dimen>
+    <dimen name="settings_section_title_padding_top_first">24dp</dimen>
+    <dimen name="settings_section_title_padding_top">40dp</dimen>
+    <dimen name="settings_section_title_padding_bottom">16dp</dimen>
+    <dimen name="settings_item_padding_vertical">16dp</dimen>
+    <dimen name="settings_icon_size">24dp</dimen>
+    <dimen name="settings_icon_text_gap">10dp</dimen>
+    <dimen name="settings_value_chevron_gap">7dp</dimen>
 </resources>
 

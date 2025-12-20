@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -133,18 +135,25 @@ public class CategoryDetailActivity extends AppCompatActivity {
     private void updateFollowButtonUI() {
         boolean isFollowed = followMap != null && followMap.containsKey(categoryId);
 
+        // Get theme-aware colors
+        int colorNormalBackground = ContextCompat.getColor(this, R.color.follow_button_background);
+        int colorNormalText = ContextCompat.getColor(this, R.color.follow_button_text);
+        int colorNormalStroke = ContextCompat.getColor(this, R.color.follow_button_stroke);
+        int colorSelectedBackground = ContextCompat.getColor(this, R.color.follow_button_selected_background);
+        int colorSelectedText = ContextCompat.getColor(this, R.color.follow_button_selected_text);
+
         if (isFollowed) {
             btnFollow.setText("Đang theo dõi");
-            btnFollow.setTextColor(Color.WHITE);
-            btnFollow.setBackgroundTintList(ColorStateList.valueOf(Color.BLACK));
-            btnFollow.setStrokeColor(ColorStateList.valueOf(Color.BLACK));
+            btnFollow.setTextColor(colorSelectedText);
+            btnFollow.setBackgroundTintList(ColorStateList.valueOf(colorSelectedBackground));
+            btnFollow.setStrokeColor(ColorStateList.valueOf(colorSelectedBackground));
             btnFollow.setStrokeWidth(0);
         } else {
             btnFollow.setText("Theo dõi");
-            btnFollow.setTextColor(Color.BLACK);
-            btnFollow.setBackgroundTintList(ColorStateList.valueOf(Color.WHITE));
-            btnFollow.setStrokeColor(ColorStateList.valueOf(Color.BLACK));
-            btnFollow.setStrokeWidth(2);
+            btnFollow.setTextColor(colorNormalText);
+            btnFollow.setBackgroundTintList(ColorStateList.valueOf(colorNormalBackground));
+            btnFollow.setStrokeColor(ColorStateList.valueOf(colorNormalStroke));
+            btnFollow.setStrokeWidth(1);
         }
     }
 

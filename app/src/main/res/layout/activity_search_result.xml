@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="?attr/colorSurface">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:background="?attr/colorSurface"
         android:elevation="8dp"
         app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled" />
@@ -36,7 +36,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/abc_ic_ab_back_material"
-                app:tint="#000000"
+                app:tint="?attr/colorOnSurface"
                 android:layout_marginEnd="12dp"/>
 
             <LinearLayout
@@ -52,14 +52,14 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:src="@android:drawable/ic_menu_search"
-                    app:tint="#757575"/>
+                    app:tint="?attr/colorOnSurfaceVariant"/>
 
                 <TextView
                     android:id="@+id/tvSearchQuery"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Nghiên cứu AI"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="14sp"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
@@ -69,14 +69,14 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                app:tint="#757575"
+                app:tint="?attr/colorOnSurfaceVariant"
                 android:layout_marginStart="12dp"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEEEEE"/>
+            android:background="@color/divider"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@android:drawable/ic_menu_search"
-                    app:tint="#757575"
+                    app:tint="?attr/colorOnSurfaceVariant"
                     android:layout_marginBottom="24dp"/>
 
                 <TextView
@@ -112,14 +112,14 @@
                     android:text="Không tìm thấy bài viết"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"/>
+                    android:textColor="?attr/colorOnSurface"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bạn hãy thử tìm kiếm lại với từ khóa khác"
                     android:textSize="14sp"
-                    android:textColor="#9E9E9E"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_marginTop="8dp"/>
 
                 <TextView

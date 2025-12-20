@@ -1,6 +1,7 @@
 package phivu.ueh.edu.vn.news_app.ui.main;
 
 import androidx.appcompat.app.AppCompatActivity;
+import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
@@ -45,7 +46,7 @@ import phivu.ueh.edu.vn.news_app.model.Article;
 import phivu.ueh.edu.vn.news_app.model.Category;
 import phivu.ueh.edu.vn.news_app.model.Comment;
 
-public class ArticleDetailActivity extends AppCompatActivity {
+public class ArticleDetailActivity extends BaseActivity {
 
     // Views
     private ImageView imgHeader;

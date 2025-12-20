@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="?attr/colorSurface">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:background="?attr/colorSurface"
         android:elevation="8dp"
         app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled" />
@@ -28,7 +28,7 @@
             android:text="Đã lưu"
             android:textSize="32sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="?attr/colorOnSurface"
             android:fontFamily="sans-serif-medium"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
@@ -56,12 +56,12 @@
                     android:text="Lưu"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"/>
+                    android:textColor="?attr/colorOnSurface"/>
                 <View
                     android:id="@+id/viewTabSavedIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="#000000"
+                    android:background="?attr/colorPrimary"
                     android:layout_marginTop="8dp"/>
             </LinearLayout>
 
@@ -79,12 +79,12 @@
                     android:layout_height="wrap_content"
                     android:text="Lịch sử đọc"
                     android:textSize="16sp"
-                    android:textColor="#757575"/>
+                    android:textColor="?attr/colorOnSurfaceVariant"/>
                 <View
                     android:id="@+id/viewTabHistoryIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="#000000"
+                    android:background="?attr/colorPrimary"
                     android:layout_marginTop="8dp"
                     android:visibility="invisible"/>
             </LinearLayout>
@@ -93,7 +93,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEEEEE"/>
+            android:background="@color/divider"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -131,7 +131,7 @@
                     android:text="Chưa có bài viết nào được lưu"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorOnSurface"
                     android:gravity="center"
                     android:layout_marginTop="16dp"/>
 
@@ -141,7 +141,7 @@
                     android:layout_height="wrap_content"
                     android:text="Nhấn lưu bất kỳ bài viết nào bạn yêu thích hoặc để đọc khi không có internet"
                     android:textSize="14sp"
-                    android:textColor="#757575"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:gravity="center"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="4dp"/>
@@ -184,7 +184,7 @@
                     android:text="Bạn chưa đọc bài viết nào"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorOnSurface"
                     android:gravity="center"
                     android:layout_marginTop="16dp"/>
 
@@ -194,7 +194,7 @@
                     android:layout_height="wrap_content"
                     android:text="Các bài viết được bạn đọc sẽ được lưu ở đây"
                     android:textSize="14sp"
-                    android:textColor="#757575"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:gravity="center"
                     android:layout_marginTop="8dp"
                     android:lineSpacingExtra="4dp"/>

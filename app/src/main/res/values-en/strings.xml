@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">News_app</string>
+    <string name="login_prompt">Already have an account? <font color="#84CC16"><b>Sign in</b></font></string>
+    
+    <!-- Article Detail Screen -->
+    <string name="article_image_description">Article image</string>
+    <string name="article_error_loading">Failed to load article</string>
+    <string name="article_retry">Retry</string>
+    <string name="article_author_default">Author</string>
+    <string name="article_content_placeholder">Content is being updated</string>
+    
+    <!-- Bottom Action Bar -->
+    <string name="action_comment">Comment</string>
+    <string name="action_save">Save</string>
+    <string name="action_share">Share</string>
+    
+    <!-- Comments Bottom Sheet -->
+    <string name="comments_title">Comments</string>
+    <string name="comments_empty_title">No comments yet</string>
+    <string name="comments_empty_subtitle">Be the first to comment on this article</string>
+    <string name="comments_input_hint">Add a comment</string>
+    <string name="comments_error_loading">Failed to load comments</string>
+    <string name="comments_retry">Retry</string>
+    <string name="comments_require_login">Please sign in to comment</string>
+    <string name="comments_send_error">Failed to send comment</string>
+    <string name="comments_empty_content">Comment content cannot be empty</string>
+    <string name="comments_view_all">View all</string>
+    
+    <!-- Related Articles Section -->
+    <string name="related_articles_title">Other articles by %1$s</string>
+    <string name="related_articles_empty">No other articles</string>
+    <string name="related_articles_error">Failed to load related articles</string>
+    
+    <!-- Saved Screen -->
+    <string name="saved_empty_title">No saved articles yet</string>
+    <string name="saved_empty_subtitle">Press save on any article you like or to read when offline</string>
+    <string name="saved_start_explore">Start exploring</string>
+    <string name="history_empty_title">You haven\'t read any articles yet</string>
+    <string name="history_empty_subtitle">Articles you read will be saved here</string>
+    
+    <!-- Settings Screen -->
+    <string name="action_back">Back</string>
+    <string name="language">Language</string>
+    <string name="theme">Appearance</string>
+    <string name="notifications">Notifications</string>
+    <string name="logout">Log out</string>
+    <string name="chevron_right">Right arrow</string>
+    
+    <!-- Language Selection -->
+    <string name="language_vietnamese_display">Tiếng Việt (Vietnamese)</string>
+    <string name="language_english_display">English (Tiếng Anh)</string>
+    <string name="language_vietnamese_primary">Tiếng Việt</string>
+    <string name="language_vietnamese_secondary">Vietnamese</string>
+    <string name="language_english_primary">English</string>
+    <string name="language_english_secondary">Tiếng Anh</string>
+    <string name="save">Save</string>
+    <string name="close">Close</string>
+    
+    <!-- Theme Selection -->
+    <string name="theme_light_display">Light</string>
+    <string name="theme_dark_display">Dark</string>
+    
+    <!-- Notification Settings -->
+    <string name="notification_disabled">Notifications disabled</string>
+    <string name="notification_permission_required">Notification permission required</string>
+    <string name="notification_permission_message">To receive notifications, please grant permission in App Settings.</string>
+    <string name="notification_permission_denied">You have disabled notifications</string>
+    <string name="notification_open_settings">Open settings</string>
+    <string name="notification_cancel">Cancel</string>
+</resources>
+
