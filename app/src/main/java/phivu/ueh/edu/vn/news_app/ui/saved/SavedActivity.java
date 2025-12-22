@@ -25,10 +25,11 @@ import phivu.ueh.edu.vn.news_app.data.local.saved.SavedArticleDAO;
 import phivu.ueh.edu.vn.news_app.ui.main.ArticleDetailActivity;
 import phivu.ueh.edu.vn.news_app.ui.main.HomeActivity;
 import phivu.ueh.edu.vn.news_app.ui.profile.ProfileActivity;
+import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
 import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 import phivu.ueh.edu.vn.news_app.model.Article;
 
-public class SavedActivity extends AppCompatActivity {
+public class SavedActivity extends BaseActivity {
 
     // Tab views
     private LinearLayout tabSaved, tabHistory;

@@ -11,6 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +29,7 @@ import phivu.ueh.edu.vn.news_app.data.remote.UserFirebaseDAO;
 import phivu.ueh.edu.vn.news_app.data.repository.ArticleRepository;
 import phivu.ueh.edu.vn.news_app.model.Article;
 import phivu.ueh.edu.vn.news_app.model.User;
+import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
 import phivu.ueh.edu.vn.news_app.ui.main.ArticleAdapter; // Dùng adapter bài viết
 import phivu.ueh.edu.vn.news_app.ui.main.HomeActivity;
 import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
@@ -38,7 +41,7 @@ import android.view.View;
 import phivu.ueh.edu.vn.news_app.ui.create.CreateArticleActivity;
 
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends BaseActivity {
 
     // Views Profile cũ
     private TextView tvName, tvBio, tvWriteBio;
@@ -147,14 +150,18 @@ public class ProfileActivity extends AppCompatActivity {
 
     // Hàm chuyển đổi giữa Tab Thông tin và Bài viết
     private void switchTab(boolean showInfo) {
+        // Get theme-aware colors
+        int colorActive = ContextCompat.getColor(this, R.color.text_primary);
+        int colorInactive = ContextCompat.getColor(this, R.color.text_tertiary);
+        
         if (showInfo) {
             // UI Tab: Chọn Info
             tvTabInfoTitle.setTypeface(null, Typeface.BOLD);
-            tvTabInfoTitle.setTextColor(Color.BLACK);
+            tvTabInfoTitle.setTextColor(colorActive);
             underlineInfo.setVisibility(View.VISIBLE);
 
             tvTabArticlesTitle.setTypeface(null, Typeface.NORMAL);
-            tvTabArticlesTitle.setTextColor(Color.parseColor("#757575"));
+            tvTabArticlesTitle.setTextColor(colorInactive);
             underlineArticles.setVisibility(View.INVISIBLE);
 
             // Content: Hiện Info, ẩn Articles
@@ -164,11 +171,11 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             // UI Tab: Chọn Articles
             tvTabInfoTitle.setTypeface(null, Typeface.NORMAL);
-            tvTabInfoTitle.setTextColor(Color.parseColor("#757575"));
+            tvTabInfoTitle.setTextColor(colorInactive);
             underlineInfo.setVisibility(View.INVISIBLE);
 
             tvTabArticlesTitle.setTypeface(null, Typeface.BOLD);
-            tvTabArticlesTitle.setTextColor(Color.BLACK);
+            tvTabArticlesTitle.setTextColor(colorActive);
             underlineArticles.setVisibility(View.VISIBLE);
 
             // Content: Ẩn Info, hiện Articles

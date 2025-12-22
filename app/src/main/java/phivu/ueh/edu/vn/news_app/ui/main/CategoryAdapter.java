@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -94,12 +95,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
 
     private void updateFollowButton(CategoryViewHolder holder, boolean followed) {
+        // Get theme-aware colors
+        int colorNormal = ContextCompat.getColor(context, R.color.follow_button_text);
+        int colorSelected = ContextCompat.getColor(context, R.color.follow_button_selected_text);
+        
         if (followed) {
             holder.btnFollow.setText("Đã theo dõi");
             holder.btnFollow.setBackgroundResource(R.drawable.bg_follow_button_selected);
+            holder.btnFollow.setTextColor(colorSelected);
         } else {
             holder.btnFollow.setText("Theo dõi");
             holder.btnFollow.setBackgroundResource(R.drawable.bg_follow_button);
+            holder.btnFollow.setTextColor(colorNormal);
         }
     }
 

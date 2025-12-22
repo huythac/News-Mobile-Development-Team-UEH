@@ -37,4 +37,34 @@
     <string name="saved_start_explore">Bắt đầu khám phá</string>
     <string name="history_empty_title">Bạn chưa đọc bài viết nào</string>
     <string name="history_empty_subtitle">Các bài viết được bạn đọc sẽ được lưu ở đây</string>
+    
+    <!-- Settings Screen -->
+    <string name="action_back">Quay lại</string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="theme">Giao diện</string>
+    <string name="notifications">Thông báo</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="chevron_right">Mũi tên phải</string>
+    
+    <!-- Language Selection -->
+    <string name="language_vietnamese_display">Tiếng Việt (Vietnamese)</string>
+    <string name="language_english_display">English (Tiếng Anh)</string>
+    <string name="language_vietnamese_primary">Tiếng Việt</string>
+    <string name="language_vietnamese_secondary">Vietnamese</string>
+    <string name="language_english_primary">English</string>
+    <string name="language_english_secondary">Tiếng Anh</string>
+    <string name="save">Lưu</string>
+    <string name="close">Đóng</string>
+    
+    <!-- Theme Selection -->
+    <string name="theme_light_display">Nền sáng</string>
+    <string name="theme_dark_display">Nền tối</string>
+    
+    <!-- Notification Settings -->
+    <string name="notification_disabled">Đã tắt thông báo</string>
+    <string name="notification_permission_required">Cần quyền thông báo</string>
+    <string name="notification_permission_message">Để nhận thông báo, vui lòng cấp quyền trong Cài đặt ứng dụng.</string>
+    <string name="notification_permission_denied">Bạn đã tắt thông báo</string>
+    <string name="notification_open_settings">Mở cài đặt</string>
+    <string name="notification_cancel">Hủy</string>
 </resources>

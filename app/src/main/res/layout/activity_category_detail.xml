@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF">
+    android:background="?attr/colorSurface">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/abc_ic_ab_back_material"
-            app:tint="#000000"
+            app:tint="?attr/colorOnSurface"
             android:layout_centerVertical="true"/>
         <TextView
             android:layout_width="wrap_content"
@@ -25,7 +25,7 @@
             android:text="Chủ đề"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:textColor="#000000"
+            android:textColor="?attr/colorOnSurface"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -53,14 +53,14 @@
                     android:layout_height="64dp"
                     app:cardCornerRadius="32dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="#F5F5F5">
+                    app:cardBackgroundColor="@color/category_icon_background">
 
                     <ImageView
                         android:id="@+id/imgCategoryIcon"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:src="@android:drawable/ic_menu_sort_by_size"
-                        app:tint="#333333"
+                        app:tint="?attr/colorOnSurfaceVariant"
                         android:layout_gravity="center"/>
                 </androidx.cardview.widget.CardView>
 
@@ -71,7 +71,7 @@
                     android:text="Tên chủ đề"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
+                    android:textColor="?attr/colorOnSurface"
                     android:layout_marginTop="16dp"/>
 
                 <TextView
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textSize="14sp"
-                    android:textColor="#757575"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:layout_marginTop="8dp"/>
 
                 <com.google.android.material.button.MaterialButton
@@ -88,10 +88,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Đang theo dõi"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/follow_button_selected_text"
                     android:textSize="14sp"
                     android:textAllCaps="false"
-                    app:backgroundTint="#000000"
+                    app:backgroundTint="@color/follow_button_selected_background"
                     app:cornerRadius="20dp"
                     android:layout_marginTop="16dp"
                     android:paddingHorizontal="24dp"/>
@@ -103,7 +103,7 @@
                 android:text="Bài viết gợi ý"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#000000"
+                android:textColor="?attr/colorOnSurface"
                 android:layout_marginStart="16dp"
                 android:layout_marginBottom="12dp"/>
 

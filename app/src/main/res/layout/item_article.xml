@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="?attr/colorSurface"
     android:paddingTop="16dp"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
@@ -124,29 +124,29 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:paddingBottom="16dp"
-        android:paddingEnd="4dp">
+        android:paddingEnd="4dp"
+        android:paddingBottom="20dp">
 
         <!-- Left: Date + Comment Count -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
+            android:layout_marginEnd="12dp"
             android:layout_toStartOf="@id/imgBookmark"
-            android:layout_marginEnd="12dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <!-- Date -->
             <TextView
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/mona_sans"
                 android:textAppearance="@style/TextAppearance.Article.Meta"
                 android:textColor="@color/article_text_secondary"
                 android:textSize="12sp"
-                android:fontFamily="@font/mona_sans"
                 tools:text="28/11/2025" />
 
             <!-- Comment Count (with icon) -->
@@ -154,29 +154,29 @@
                 android:id="@+id/layoutCommentCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
                 android:layout_marginStart="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/tvCommentCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.Article.Meta"
-                    android:textColor="@color/article_text_secondary"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/mona_sans"
-                    tools:text="" />
 
                 <ImageView
                     android:id="@+id/imgComment"
                     android:layout_width="14dp"
                     android:layout_height="14dp"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:contentDescription="Bình luận"
                     android:src="@drawable/chat_circle"
-                    app:tint="@color/article_text_secondary"
-                    android:contentDescription="Bình luận" />
+                    app:tint="@color/article_text_secondary" />
+
+                <TextView
+                    android:id="@+id/tvCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/mona_sans"
+                    android:textAppearance="@style/TextAppearance.Article.Meta"
+                    android:textColor="@color/article_text_secondary"
+                    android:textSize="12sp"
+                    tools:text="" />
 
             </LinearLayout>
 
@@ -185,35 +185,35 @@
         <!-- Right: Bookmark Icon -->
         <ImageView
             android:id="@+id/imgBookmark"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="0dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="Lưu"
+            android:focusable="true"
+            android:padding="4dp"
             android:src="@drawable/bookmark_simple"
             app:tint="@color/bookmark_default"
-            android:contentDescription="Lưu"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
             tools:src="@drawable/bookmarks"
             tools:tint="@color/bookmark_saved" />
 
         <!-- Delete Icon (only for history tab, hidden by default) -->
         <ImageView
             android:id="@+id/imgDelete"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_alignParentEnd="true"
-            android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/article_text_secondary"
-            android:contentDescription="Xóa"
-            android:clickable="true"
-            android:focusable="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
-            android:visibility="gone" />
+            android:clickable="true"
+            android:contentDescription="Xóa"
+            android:focusable="true"
+            android:padding="6dp"
+            android:src="@drawable/ic_trash"
+            android:visibility="gone"
+            app:tint="@color/article_text_secondary" />
 
     </RelativeLayout>
 
@@ -221,6 +221,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="12dp"
         android:background="@color/article_divider" />
 
 </LinearLayout>

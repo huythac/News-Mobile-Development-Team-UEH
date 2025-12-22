@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="?attr/colorSurface">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="#FFFFFF"
+        android:background="?attr/colorSurface"
         android:elevation="8dp"
         app:menu="@menu/menu_bottom_nav"
         app:labelVisibilityMode="labeled" />
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Khám phá"
-            android:textColor="#000000"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="32sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
@@ -47,7 +47,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@android:drawable/ic_menu_search"
-                app:tint="#757575"/>
+                app:tint="?attr/colorOnSurfaceVariant"/>
 
             <EditText
                 android:id="@+id/edtFakeSearch"
@@ -55,8 +55,8 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="Tìm kiếm"
-                android:textColorHint="#9E9E9E"
-                android:textColor="#000000"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:focusable="false"
                 android:clickable="true"
@@ -66,7 +66,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEEEEE"
+            android:background="@color/divider"
             android:layout_marginBottom="16dp"/>
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bài viết hàng đầu"
-            android:textColor="#000000"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginStart="16dp"

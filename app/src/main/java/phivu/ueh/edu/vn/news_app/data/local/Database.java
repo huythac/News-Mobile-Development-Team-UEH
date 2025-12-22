@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class Database extends SQLiteOpenHelper {
     private static final String DB_NAME = "news.db";
 
-    // ⚠️ QUAN TRỌNG: Tăng version lên 8 để thêm bảng SavedArticle và ReadHistory
     private static final int DB_VERSION = 8;
 
     private static Database instance;

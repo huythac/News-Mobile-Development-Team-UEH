@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFFFFF"
+    android:background="?attr/colorSurface"
     android:paddingTop="16dp">
 
     <LinearLayout
@@ -20,7 +20,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/abc_ic_ab_back_material"
-            app:tint="#000000"
+            app:tint="?attr/colorOnSurface"
             android:layout_marginEnd="12dp"/>
 
         <LinearLayout
@@ -36,7 +36,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@android:drawable/ic_menu_search"
-                app:tint="#757575"/>
+                app:tint="?attr/colorOnSurfaceVariant"/>
 
             <EditText
                 android:id="@+id/edtSearchInput"
@@ -44,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="Nhập tên bài viết, tác giả..."
-                android:textColorHint="#9E9E9E"
-                android:textColor="#000000"
+                android:textColorHint="?attr/colorOnSurfaceVariant"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="14sp"
                 android:layout_marginStart="8dp"
                 android:inputType="text"
@@ -58,16 +58,16 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@android:drawable/ic_menu_close_clear_cancel"
-            app:tint="#757575"
+            app:tint="?attr/colorOnSurfaceVariant"
             android:layout_marginStart="12dp"
             android:visibility="gone"/>
     </LinearLayout>
 
     <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#EEEEEE"
-        android:layout_marginBottom="16dp"/>
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            android:layout_marginBottom="16dp"/>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
