@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,8 @@ import phivu.ueh.edu.vn.news_app.ui.saved.SavedActivity;
 import phivu.ueh.edu.vn.news_app.ui.search.SearchActivity;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import android.content.Intent;
 import android.view.View;
 import phivu.ueh.edu.vn.news_app.ui.base.BaseActivity;
@@ -63,7 +67,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_home); // Đảm bảo gọi đúng layout
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
@@ -76,33 +80,52 @@ public class HomeActivity extends BaseActivity {
         initRepos();
         setupBottomNavigation();
 
+        // Gọi hàm xử lý nút FAB riêng biệt để code gọn gàng
+        setupFloatingActionButton();
+
         loadArticles();
         setTabSelected(true);
+    }
 
-        // 1. Ánh xạ nút FAB từ XML
+    // ======================================================
+    // LOGIC NÚT FAB (ADMIN)
+    // ======================================================
+    private void setupFloatingActionButton() {
+        // 1. Ánh xạ nút FAB
         FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
 
-        // (Tùy chọn) Nếu muốn hiện nút này luôn để test (kể cả khi chưa check quyền Admin)
-        fabEditBio.setVisibility(View.VISIBLE);
+        // Kiểm tra an toàn: Nếu không tìm thấy View thì thoát luôn để tránh Crash
+        if (fabEditBio == null) return;
 
-        // 2. Bắt sự kiện Click -> Chuyển sang màn hình CreateArticleActivity
-        fabEditBio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(HomeActivity.this, CreateArticleActivity.class);
-                startActivity(intent);
-            }
+        // 2. Mặc định ẨN nút (để chờ kiểm tra quyền)
+        fabEditBio.setVisibility(View.GONE);
+
+        // 3. Sự kiện Click -> Chuyển sang trang Đăng bài
+        fabEditBio.setOnClickListener(v -> {
+            Intent intent = new Intent(HomeActivity.this, CreateArticleActivity.class);
+            startActivity(intent);
         });
 
+        // 4. Kiểm tra quyền Admin từ Firestore
+        FirebaseFirestore.getInstance().collection("users").document(userId)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String role = documentSnapshot.getString("role");
 
+                        // Logic so sánh: admin, ADMIN, Admin... đều chấp nhận
+                        if (role != null && "admin".equalsIgnoreCase(role.trim())) {
+                            // Nếu đúng là Admin thì hiện nút lên
+                            fabEditBio.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
     }
 
     // ======================================================
     // INIT
     // ======================================================
     private void initViews() {
-        FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
-        fabEditBio.setVisibility(SessionManager.isAdmin() ? View.VISIBLE : View.GONE);
 
         tvForYou = findViewById(R.id.tvForYou);
         tvTopic = findViewById(R.id.tvTopic);
@@ -213,7 +236,7 @@ public class HomeActivity extends BaseActivity {
         // Get theme-aware colors
         int colorActive = ContextCompat.getColor(this, R.color.text_primary);
         int colorInactive = ContextCompat.getColor(this, R.color.text_tertiary);
-        
+
         if (isForYou) {
             tvForYou.setTextColor(colorActive);
             tvForYou.setTypeface(null, Typeface.BOLD);

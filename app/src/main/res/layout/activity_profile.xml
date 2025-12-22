@@ -231,7 +231,8 @@
         android:layout_alignParentEnd="true"
         android:layout_above="@id/bottomNavigation"
         android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_edit"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="#FFFFFF"
         app:backgroundTint="#8BC34A"
         android:visibility="gone" />
 

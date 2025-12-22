@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -74,21 +75,44 @@ public class ProfileActivity extends BaseActivity {
         initViews();
         setupEvents();
         setupBottomNavigation();
+        setupFloatingActionButton();
 
-        // 1. Ánh xạ nút FAB từ XML
+    }
+
+    // ======================================================
+    // LOGIC NÚT FAB (ADMIN)
+    // ======================================================
+    private void setupFloatingActionButton() {
+        // 1. Ánh xạ nút FAB
         FloatingActionButton fabEditBio = findViewById(R.id.fabEditBio);
 
-        // (Tùy chọn) Nếu muốn hiện nút này luôn để test (kể cả khi chưa check quyền Admin)
-        fabEditBio.setVisibility(View.VISIBLE);
+        // Kiểm tra an toàn
+        if (fabEditBio == null) return;
 
-        // 2. Bắt sự kiện Click -> Chuyển sang màn hình CreateArticleActivity
-        fabEditBio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, CreateArticleActivity.class);
-                startActivity(intent);
-            }
+        // 2. Mặc định ẨN
+        fabEditBio.setVisibility(View.GONE);
+
+        // 3. Sự kiện Click -> Chuyển sang trang Đăng bài (CreateArticle)
+        fabEditBio.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileActivity.this, CreateArticleActivity.class);
+            startActivity(intent);
         });
+
+        // 4. Kiểm tra quyền Admin từ Firestore
+        String currentUid = FirebaseAuth.getInstance().getUid();
+        if (currentUid != null) {
+            FirebaseFirestore.getInstance().collection("users").document(currentUid)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            String role = documentSnapshot.getString("role");
+                            // Logic so sánh: admin, ADMIN... đều được
+                            if (role != null && "admin".equalsIgnoreCase(role.trim())) {
+                                fabEditBio.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+        }
     }
 
     private void initViews() {
@@ -128,7 +152,7 @@ public class ProfileActivity extends BaseActivity {
                 startActivity(new Intent(this, EditProfileActivity.class));
 
         findViewById(R.id.btnEditProfile).setOnClickListener(goToEditScreen);
-        findViewById(R.id.fabEditBio).setOnClickListener(goToEditScreen);
+
         tvWriteBio.setOnClickListener(goToEditScreen);
 
         // Xử lý Click Tabs
