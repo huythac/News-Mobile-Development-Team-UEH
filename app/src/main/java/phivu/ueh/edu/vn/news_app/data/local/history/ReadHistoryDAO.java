@@ -149,7 +149,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log; // Nhớ import Log
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -167,7 +167,7 @@ public class ReadHistoryDAO {
     }
 
     // =========================
-    // 1. GHI LẠI LỊCH SỬ (Đổi tên recordRead -> addToHistory)
+    // 1. GHI LẠI LỊCH SỬ
     // =======================================================
     public void addToHistory(String articleId) {
         if (articleId == null || articleId.trim().isEmpty()) return;
@@ -196,7 +196,7 @@ public class ReadHistoryDAO {
     }
 
     // =========================
-    // 2. XÓA KHỎI LỊCH SỬ (Đổi tên deleteFromHistory -> deleteHistory)
+    // 2. XÓA KHỎI LỊCH SỬ
     // ================================================================
     public void deleteHistory(String articleId) {
         if (articleId == null || articleId.trim().isEmpty()) return;
