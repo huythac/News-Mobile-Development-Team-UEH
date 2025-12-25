@@ -18,7 +18,7 @@ public class FollowCategoryFirebaseDAO {
 // File: FollowCategoryFirebaseDAO.java
 
     // =========================
-    // FOLLOW (Sửa lại logic Nested Map)
+    // FOLLOW
     // =========================
     public void follow(String userId, String categoryId) {
         // 1. Tạo Map con chứa { "categoryId": true }
@@ -36,7 +36,7 @@ public class FollowCategoryFirebaseDAO {
     }
 
     // =========================
-    // UNFOLLOW (Sửa lại logic Nested Map)
+    // UNFOLLOW
     // =========================
     public void unfollow(String userId, String categoryId) {
         // 1. Dùng FieldValue.delete() để xóa key con

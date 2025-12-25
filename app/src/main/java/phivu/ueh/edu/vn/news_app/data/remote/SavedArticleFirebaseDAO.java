@@ -16,14 +16,8 @@ public class SavedArticleFirebaseDAO {
         db = FirebaseFirestore.getInstance();
     }
 
-    // =========================
-    // SAVE ARTICLE
-    // =========================
     public void save(String userId, String articleId) {
-        if (userId == null || articleId == null) {
-            Log.w(TAG, "save: userId or articleId is null");
-            return;
-        }
+        if (userId == null || articleId == null) return;
 
         Map<String, Object> data = new HashMap<>();
         data.put("articleId", articleId);
@@ -35,19 +29,13 @@ public class SavedArticleFirebaseDAO {
                 .document(articleId)
                 .set(data)
                 .addOnSuccessListener(aVoid ->
-                        Log.d(TAG, "Saved article: " + articleId))
+                        Log.d(TAG, "Saved: " + articleId))
                 .addOnFailureListener(e ->
                         Log.e(TAG, "Save failed", e));
     }
 
-    // =========================
-    // UNSAVE ARTICLE
-    // =========================
     public void unsave(String userId, String articleId) {
-        if (userId == null || articleId == null) {
-            Log.w(TAG, "unsave: userId or articleId is null");
-            return;
-        }
+        if (userId == null || articleId == null) return;
 
         db.collection("user_saved_articles")
                 .document(userId)
@@ -55,7 +43,7 @@ public class SavedArticleFirebaseDAO {
                 .document(articleId)
                 .delete()
                 .addOnSuccessListener(aVoid ->
-                        Log.d(TAG, "Unsaved article: " + articleId))
+                        Log.d(TAG, "Unsaved: " + articleId))
                 .addOnFailureListener(e ->
                         Log.e(TAG, "Unsave failed", e));
     }

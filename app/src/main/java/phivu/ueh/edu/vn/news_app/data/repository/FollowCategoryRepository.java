@@ -38,21 +38,6 @@ public class FollowCategoryRepository {
         local.unfollow(userId, categoryId);
     }
 
-    // =========================
-    // FOLLOW (WITH CALLBACK) - dùng cho Detail
-    // =========================
-    public void follow(String userId, String categoryId, Runnable onDone) {
-        remote.follow(userId, categoryId);
-        local.follow(userId, categoryId);
-    }
-
-    // =========================
-    // UNFOLLOW (WITH CALLBACK) - dùng cho Detail
-    // =========================
-    public void unfollow(String userId, String categoryId, Runnable onDone) {
-        remote.unfollow(userId, categoryId);
-        local.unfollow(userId, categoryId);
-    }
 
     // =========================
     // GET FOLLOW LIST
